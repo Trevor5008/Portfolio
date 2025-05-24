@@ -8,16 +8,13 @@ const circuitPaths = [
 console.log("Rendering CircuitBoard")
 
 const CircuitBoard = () => {
-		<svg 
-		    className="absolute z-10 inset-0 w-full h-full" 
-		    viewBox="0 0 800 600"
-		    xmlns="http://www.w3.org/2000/svg"
-		    fill="none"
-		>
-				{circuitPaths.map((line, i) => (
-						<CircuitLine key={i} {...line} />
-				))}
-		</svg>
+		return (
+				<svg className="w-full h-full" viewBox="0 0 800 600">
+						{circuitPaths.map((line, i) => (
+								<CircuitLine key={i} {...line} />
+						))}
+				</svg>
+		)
 }
 
 export default CircuitBoard;

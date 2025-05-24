@@ -1,11 +1,12 @@
 import { useState } from 'react'
+import CircuitBoard from './components/CircuitBoard'
 
 function App() {
 
   return (
-    <>
-      <h1 className="text-red-600">Vite + React</h1>
-    </>
+    <div className="w-full h-screen bg-black">
+		  <CircuitBoard />
+    </div>
   )
 }
 
