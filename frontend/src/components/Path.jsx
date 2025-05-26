@@ -1,7 +1,7 @@
-const CircuitLine = ({ points, delay = 0 }) => {
+const Path = ({ d, delay = 0 }) => {
     return (
-		<polyline
-			points={points}
+		<path
+			d={d}
 			className="path stroke-cyan-400 fill-none"
 			strokeWidth="1"
 			style={{
@@ -11,4 +11,4 @@ const CircuitLine = ({ points, delay = 0 }) => {
     )
 }
 
-export default CircuitLine;
+export default Path;

@@ -1,4 +1,4 @@
-const linePoints = [
+const polyLines = [
   {
     "points": "838.4,0 743.5,66.3 743.5,177 720,194.3 \t",
     "circles": [
@@ -2876,4 +2876,4 @@ const linePoints = [
   }
 ]
 
-export default linePoints;
+export default polyLines;
