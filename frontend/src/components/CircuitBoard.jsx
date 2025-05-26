@@ -1,18 +1,21 @@
 import CircuitLine from './CircuitLine';
-
-const circuitPaths = [
-		{ points: "20, 30 80, 30 80, 90", delay: 0 },
-		{ points: "40, 60 120, 60 120, 140", delay: 0.4 },
-];
-
-console.log("Rendering CircuitBoard")
+import Circle from './Circle';
+import linePoints from '../data/lines.js'
+import circles from '../data/circles.js'
 
 const CircuitBoard = () => {
 		return (
-				<svg className="w-full h-full" viewBox="0 0 800 600">
-						{circuitPaths.map((line, i) => (
-								<CircuitLine key={i} {...line} />
-						))}
+				<svg className="w-full h-full" viewBox="0 0 960 560" preserveAspectRatio="none" >
+				<g id="lines">
+				    {linePoints.map((node, key) => {
+							return <CircuitLine key={key} points={node.points} />
+					})}
+				</g>
+				<g id="circles">
+				    {circles.map((node, key) => {
+							return <Circle key={key} cx={node.cx} cy={node.cy} />
+				    })}
+				</g>
 				</svg>
 		)
 }

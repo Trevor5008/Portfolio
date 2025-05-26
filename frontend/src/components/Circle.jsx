@@ -1,7 +1,9 @@
-const CircuitLine = ({ points, delay = 0 }) => {
+const Circle = ({ cx, cy, delay = 0 }) => {
     return (
-		<polyline
-			points={points}
+		<circle
+		    cx={cx}
+			cy={cy}
+			r="2.8"
 			className="stroke-cyan-400 fill-none"
 			strokeWidth="1"
 			style={{
@@ -11,4 +13,4 @@ const CircuitLine = ({ points, delay = 0 }) => {
     )
 }
 
-export default CircuitLine;
+export default Circle;
