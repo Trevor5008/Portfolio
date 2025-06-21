@@ -5,7 +5,7 @@ import circles from '../data/circles.js'
 import linePaths from '../data/linePaths.js'
 
 
-const CircuitBoard = () => {
+const CircuitBoard = ({ setIsComplete }) => {
   // Converts polyline coords to path 'd' property format
   function polylineToPath(pointsStr) {
     const points = pointsStr.trim().split(' ');
@@ -13,13 +13,13 @@ const CircuitBoard = () => {
   }
 
   return (
-    <svg className="w-full h-full" viewBox="0 0 960 560" preserveAspectRatio="none" >
+    <svg className="w-full h-screen" viewBox="0 0 960 560" preserveAspectRatio="none" >
       <g id="lines">
           {polyLines.map((node, key) => {
-              return <AnimatedPath key={key} d={polylineToPath(node.points)} />
+              return <AnimatedPath setIsComplete={setIsComplete} key={key} d={polylineToPath(node.points)} />
           })}
           {linePaths.map((node, key) => {
-              return <AnimatedPath key={key} d={node} />
+              return <AnimatedPath setIsComplete={setIsComplete} key={key} d={node} />
           })}
       </g>
       <g id="circles">

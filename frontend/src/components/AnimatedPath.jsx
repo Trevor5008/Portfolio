@@ -1,30 +1,35 @@
-import { useLayoutEffect, useRef } from 'react';
-import { animate } from 'animejs';
+import { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
 
-const AnimatedPath = ({ d, delay = 0 }) => {
+const AnimatedPath = ({ d, duration = 5, setIsComplete }) => {
   const ref = useRef(null);
 
-  useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el || typeof el.getTotalLength !== 'function') return;
-
-    const length = el.getTotalLength();
-    el.style.strokeDasharray = length;
-    el.style.strokeDashoffset = length;
-
-    animate({
-      targets: el,
+  useEffect(() => {
+    const length = ref.current.getTotalLength();
+    gsap.fromTo(ref.current, {
+      strokeDasharray: length,
+      strokeDashoffset: length
+    }, {
       strokeDashoffset: 0,
-      duration: 3000,
-      easing: 'easeInOutSine',
-      delay: delay * 1000,
+      duration,
+      // repeat: -1, // looping
+      // yoyo: true, // back-and-forth tracing
+      onComplete: () => {
+        gsap.to(ref.current, {
+          stroke: "##00d3f2",
+          duration: 0.5
+        })
+        setIsComplete(true)
+      },
+      ease: "power1.inOut"
     });
-  }, [d, delay]);
+  }, []);
 
   return (
     <path
+        ref={ref}
         d={d}
-        className="path stroke-cyan-400 fill-none"
+        className="path stroke-cyan-100 fill-none"
         strokeWidth="1"
     />
   )
