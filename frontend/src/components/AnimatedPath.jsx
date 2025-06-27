@@ -10,14 +10,14 @@ const AnimatedPath = ({ d, duration = 5, setIsComplete }) => {
       strokeDasharray: length,
       strokeDashoffset: length
     }, {
-      strokeDashoffset: 0,
+      strokeDashoffset: 1,
       duration,
       // repeat: -1, // looping
       // yoyo: true, // back-and-forth tracing
       onComplete: () => {
         gsap.to(ref.current, {
-          stroke: "##00d3f2",
-          duration: 0.5
+          stroke: "#00d3f2",
+          duration: 5
         })
         setIsComplete(true)
       },
