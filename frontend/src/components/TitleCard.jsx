@@ -1,10 +1,11 @@
-const TitleCard = () => {
+const TitleCard = ({ theme }) => {
+
     return (
         <div id="titleCard" 
-            className="absolute inset-0 flex flex-col items-center justify-center text-cyan-400">
+            className={`${theme == 'light' ? "text-rose-100" : "text-cyan-400"} absolute inset-0 flex flex-col items-center justify-center`}>
             <div className="flex flex-col items-center h-1/3 px-2 justify-evenly">
-                <h1 className="self-auto font-rock-salt mt-3 text-2xl">Trevor Werner</h1>
-                <button className="font-rock-salt text-xs text-cyan-400 border-2 p-2 w-20 mt-10 rounded">Enter</button>
+                <h1 className="text-shadow-inherit self-auto font-rock-salt mt-3 tracking-wide text-3xl">Trevor Werner</h1>
+                <button className="flex justify-center font-rock-salt cursor-pointer text-xs border-2 py-2 px-6 w-20 hover:bg-rose-200 hover:text-blue-600 mt-10 rounded">Enter</button>
             </div>
         </div>
     )

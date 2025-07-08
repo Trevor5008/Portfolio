@@ -5,7 +5,8 @@ import polyLines from '../data/polyLines.js'
 import circles from '../data/circles.js'
 import linePaths from '../data/linePaths.js'
 
-const CircuitBoard = ({ setIsComplete }) => {
+const CircuitBoard = ({ setIsComplete, theme, handleSwitch }) => {
+    console.log(`Circuit board theme ${theme}`)
     // Converts polyline coords to path 'd' property format
     function polylineToPath(pointsStr) {
         const points = pointsStr.trim().split(' ');
@@ -14,19 +15,19 @@ const CircuitBoard = ({ setIsComplete }) => {
 
     return (
         <div id="main-content">
-            <ThemeSwitch />
+            <ThemeSwitch theme={theme} handleSwitch={handleSwitch} />
             <svg className="w-full h-screen" viewBox="0 0 960 560" preserveAspectRatio="none" >
                 <g id="lines">
                     {polyLines.map((node, key) => {
-                        return <AnimatedPath setIsComplete={setIsComplete} key={key} d={polylineToPath(node.points)} />
+                        return <AnimatedPath theme={theme} setIsComplete={setIsComplete} key={key} d={polylineToPath(node.points)} />
                     })}
                     {linePaths.map((node, key) => {
-                        return <AnimatedPath setIsComplete={setIsComplete} key={key} d={node} />
+                        return <AnimatedPath theme={theme} setIsComplete={setIsComplete} key={key} d={node} />
                     })}
                 </g>
                 <g id="circles">
                     {circles.map((node, key) => {
-                        return <Circle key={key} cx={node.cx} cy={node.cy} />
+                        return <Circle theme={theme} key={key} cx={node.cx} cy={node.cy} />
                     })}
                 </g>
             </svg>
