@@ -6,7 +6,7 @@ const AnimatedPath = ({ theme, d, duration = 5, setIsComplete }) => {
 
     useEffect(() => {
         const length = ref.current.getTotalLength();
-        let circuitColor = theme == "dark" ? "#140899" : "#00d3f2";
+        let circuitColor = theme == "dark" ? "#3730a3" : "#06b6d4";
         gsap.fromTo(ref.current, {
             strokeDasharray: length,
             strokeDashoffset: length
@@ -30,7 +30,10 @@ const AnimatedPath = ({ theme, d, duration = 5, setIsComplete }) => {
         <path
             ref={ref}
             d={d}
-            className={`${theme == 'dark' ? "stroke-blue-600" : "stroke-cyan-500"}  path fill-none`}
+            className={
+                `${theme == 'dark' ? "stroke-blue-600" : "stroke-cyan-500"}
+                path fill-none`
+            }
             strokeWidth="1"
         />
     )

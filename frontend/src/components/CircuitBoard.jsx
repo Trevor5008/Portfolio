@@ -5,8 +5,7 @@ import polyLines from '../data/polyLines.js'
 import circles from '../data/circles.js'
 import linePaths from '../data/linePaths.js'
 
-const CircuitBoard = ({ setIsComplete, theme, handleSwitch }) => {
-    console.log(`Circuit board theme ${theme}`)
+const CircuitBoard = ({ setIsComplete, isComplete, theme, handleSwitch }) => {
     // Converts polyline coords to path 'd' property format
     function polylineToPath(pointsStr) {
         const points = pointsStr.trim().split(' ');
@@ -27,7 +26,7 @@ const CircuitBoard = ({ setIsComplete, theme, handleSwitch }) => {
                 </g>
                 <g id="circles">
                     {circles.map((node, key) => {
-                        return <Circle theme={theme} key={key} cx={node.cx} cy={node.cy} />
+                        return <Circle isComplete={isComplete} theme={theme} key={key} cx={node.cx} cy={node.cy} />
                     })}
                 </g>
             </svg>
