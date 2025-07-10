@@ -20,7 +20,7 @@ function App() {
     }
 
     return (
-        <div className={`${theme == 'dark' ? "bg-black" : "bg-blue-900"}` + " w-full h-screen"}>
+        <div className={`${theme == 'dark' ? "bg-neutral-950" : "bg-blue-900"}` + " w-full h-screen"}>
             <CircuitBoard 
                 setIsComplete={setIsComplete}
                 isComplete={isComplete}

@@ -8,7 +8,7 @@ const ThemeSwitch = ({ theme, handleSwitch } ) => {
                 `${theme == 'dark' ? "bg-black ring-cyan-400" 
                 : "bg-blue-900 ring-zinc-50"} 
                 opacity-70 absolute z-2 top-6 ring-1 right-1/16 
-                flex p-1 w-1/12 justify-center rounded-lg hover:opacity-90`
+                flex p-1 max-w-24 w-1/12 justify-center rounded-lg hover:animate-pulse`
             }
         >
             <input type="checkbox" name="light-switch" 
@@ -27,9 +27,9 @@ const ThemeSwitch = ({ theme, handleSwitch } ) => {
                     width="16" height="16" 
                     xmlns="http://www.w3.org/2000/svg"
                 >
-                    <path className="fill-zinc-50" d="M6.2 1C3.2 1.8 1 4.6 1 7.9 1 11.8 4.2 15 8.1 
+                    <path className="fill-rose-200" d="M6.2 1C3.2 1.8 1 4.6 1 7.9 1 11.8 4.2 15 8.1 
                         15c3.3 0 6-2.2 6.9-5.2C9.7 11.2 4.8 6.3 6.2 1Z" />
-                    <path className="fill-zinc-50" d="M12.5 5a.625.625 0 0 1-.625-.625 1.252 1.252 0 0 
+                    <path className="fill-rose-200" d="M12.5 5a.625.625 0 0 1-.625-.625 1.252 1.252 0 0 
                         0-1.25-1.25.625.625 0 1 1 0-1.25 1.252 1.252 0 0 0 1.25-1.25.625.625 0 1 1 1.25 
                         0c.001.69.56 1.249 1.25 1.25a.625.625 0 1 1 0 1.25c-.69.001-1.249.56-1.25 
                         1.25A.625.625 0 0 1 12.5 5Z" />
