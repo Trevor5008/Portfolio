@@ -5,9 +5,8 @@ const ThemeSwitch = ({ theme, handleSwitch } ) => {
         <div 
             onClick={handleSwitch} 
             className={
-                `${theme == 'dark' ? "bg-black ring-cyan-400" 
-                : "bg-blue-900 ring-zinc-50"} 
-                opacity-70 absolute z-2 top-6 ring-1 right-1/16 
+                `${theme == 'dark' ? "bg-black ring-cyan-400" : "bg-blue-900 ring-rose-200"} 
+                opacity-70 absolute z-2 ring-1 top-6 right-1/16 
                 flex p-1 max-w-24 w-1/12 justify-center rounded-lg hover:animate-pulse`
             }
         >

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Circle from './Circle';
 import AnimatedPath from './AnimatedPath';
 import ThemeSwitch from './ThemeSwitch';
@@ -5,7 +6,7 @@ import polyLines from '../data/polyLines.js'
 import circles from '../data/circles.js'
 import linePaths from '../data/linePaths.js'
 
-const CircuitBoard = ({ setIsComplete, isComplete, theme, handleSwitch }) => {
+const CircuitBoard = ({ registerPolyPath, registerLinePath, setIsComplete, theme, pathColor, isComplete, bgColor, handleSwitch }) => {
     // Converts polyline coords to path 'd' property format
     function polylineToPath(pointsStr) {
         const points = pointsStr.trim().split(' ');
@@ -18,10 +19,10 @@ const CircuitBoard = ({ setIsComplete, isComplete, theme, handleSwitch }) => {
             <svg className="w-full h-screen" viewBox="0 0 960 560" preserveAspectRatio="none" >
                 <g id="lines">
                     {polyLines.map((node, key) => {
-                        return <AnimatedPath theme={theme} setIsComplete={setIsComplete} key={key} d={polylineToPath(node.points)} />
+                        return <AnimatedPath register={registerPolyPath} pathColor={pathColor} theme={theme} setIsComplete={setIsComplete} idx={key} key={key} d={polylineToPath(node.points)} />
                     })}
                     {linePaths.map((node, key) => {
-                        return <AnimatedPath theme={theme} setIsComplete={setIsComplete} key={key} d={node} />
+                        return <AnimatedPath register={registerLinePath} pathColor={pathColor} theme={theme} setIsComplete={setIsComplete} idx={key} key={key} d={node} />
                     })}
                 </g>
                 <g id="circles">
