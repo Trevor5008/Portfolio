@@ -13,32 +13,35 @@ function App() {
     const polyPaths = useRef([]);
     const linePaths = useRef([]);
 
-    const registerPolyPath = (el, idx) => {
-        if (el) {
-            polyPaths.current[idx] = el;
-        }
-    }
     const registerLinePath = (el, idx) => {
         if (el) {
             linePaths.current[idx] = el;
         }
     }
 
-    useLayoutEffect(() => {
+    const registerPolyPath = (el, idx) => {
+        if (el) {
+            polyPaths.current[idx] = el;
+        }
+    }
 
+    useLayoutEffect(() => {
         const validPolyPaths = polyPaths.current.filter(p => p && p.getTotalLength() > 0);
         validPolyPaths.forEach((path) => {
             const length = path.getTotalLength();
             path.style.strokeDasharray = length;
             path.style.strokeDashoffset = length;
         });
-        
-        gsap.to(validPolyPaths, {
+
+        const t1 = gsap.timeline(
+            { onComplete: () => setIsComplete(true), ease: "power2.inOut" }
+        );
+
+        t1.add("circuits");
+        t1.to(validPolyPaths, {
             strokeDashoffset: 0,
-            duration: 6.5,
-            ease: "power2.inOut",
-            onComplete: () => setIsComplete(true)
-        });
+            duration: 3.5,
+        }, "circuits");
 
         const validLinePaths = linePaths.current.filter(p => p && p.getTotalLength() > 0);
         validLinePaths.forEach((path) => {
@@ -46,13 +49,12 @@ function App() {
             path.style.strokeDasharray = length;
             path.style.strokeDashoffset = length;
         });
-        
-        gsap.to(validLinePaths, {
+
+        t1.to(validLinePaths, {
             strokeDashoffset: 0,
-            duration: 4.5,
-            ease: "power2.inOut",
-            onComplete: () => setIsComplete(true)
-        });
+            duration: 3.5,
+        }, "circuits");
+
     }, [theme]);
 
     const handleThemeChange = () => {
@@ -76,7 +78,7 @@ function App() {
                 bgColor={bgColor} 
                 handleSwitch={handleThemeChange}
             />
-            {isComplete && <TitleCard theme={theme}/> }
+            <TitleCard isComplete={isComplete} theme={theme}/> 
         </div>
     )
 }

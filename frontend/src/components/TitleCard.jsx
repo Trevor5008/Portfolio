@@ -1,19 +1,19 @@
-const TitleCard = ({ theme }) => {
-
+import { themeColors } from '../data/themes.js'; 
+const TitleCard = ({ isComplete, theme }) => {
     return (
         <div id="titleCard" 
-            className={`${theme == 'light' ? "text-rose-200" : "text-cyan-500"} 
-absolute inset-0 flex flex-col items-center justify-center`}
+            className={`${isComplete ? themeColors[theme].text : themeColors[theme].default.text} 
+                absolute inset-0 flex flex-col items-center justify-center`}
         >
             <div className="flex flex-col items-center h-1/3 px-2 justify-evenly">
                 <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
-                    width="1179.000000pt" height="492.000000pt" viewBox="0 0 1179.000000 492.000000"
+                    width="1179.000000pt" height="492.000000pt" viewBox="0 250 1179.000000 492.000000"
                     preserveAspectRatio="xMidYMid meet">
                     <g transform="translate(0.000000,492.000000) scale(0.100000,-0.100000)" 
-                        stroke={`${theme == 'light' ? "#f3cdd3" : "cyan"}`} 
-                        strokeWidth="28" fill="none" fillOpacity="0">
-                        <path d="M0 2460 l0 -2460 5895 0 5895 0 0 2460 0 2460 -5895 0 -5895 0 0
-                            -2460z m8922 643 c14 -13 18 -31 18 -85 0 -77 -12 -107 -62 -155 -32 -31 -156
+                        stroke={`${ isComplete ? themeColors[theme].svg : themeColors[theme].default.svg }`} 
+                        strokeWidth="28" fill="none">
+                        <path 
+                            d="m8922 643 c14 -13 18 -31 18 -85 0 -77 -12 -107 -62 -155 -32 -31 -156
                             -94 -211 -108 -15 -4 -26 -12 -24 -19 5 -17 482 -253 560 -276 37 -12 67 -23
                             67 -26 0 -14 -127 13 -200 43 -98 40 -357 168 -419 207 -75 48 -66 73 37 107
                             98 32 162 69 194 113 24 33 28 49 28 101 0 114 -41 106 -168 -30 -102 -110
@@ -70,17 +70,13 @@ absolute inset-0 flex flex-col items-center justify-center`}
                             4 30 43 52 86 82 161 173 247 217 203z"/>
                         <path d="M7489 2898 c-57 -39 -234 -296 -215 -315 14 -14 87 20 134 62 75 67
                             148 219 125 260 -8 14 -13 13 -44 -7z"/>
-                        <path d="M4452 2358 c2 -15 17 -30 46 -45 23 -11 38 -23 32 -25 -16 -5 -25
-                            -125 -10 -143 21 -25 106 -20 156 10 79 47 110 140 59 178 -30 22 -155 47
-                            -232 47 -51 0 -54 -2 -51 -22z"/>
                     </g>
                 </svg>
 
                 <button
                     className={`flex justify-center font-rock-salt cursor-pointer text-xs 
-                    font-bold ring-1 py-3 px-8 w-24 mt-10 rounded-lg
-                    ${theme === 'light' ? 'text-rose-100 hover:bg-rose-200 hover:text-blue-900' 
-                        : 'text-cyan-400 hover:bg-cyan-600 hover:text-zinc-950'} hover:animate-pulse`}
+                        font-bold ring-1 py-3 px-8 w-24 mt-8 mb-6 rounded-lg
+                        ${ isComplete ? themeColors[theme].text : themeColors[theme].default.text } hover:animate-pulse`}
                 >
                     Enter
                 </button>
