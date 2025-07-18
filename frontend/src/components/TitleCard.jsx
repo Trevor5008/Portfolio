@@ -9,9 +9,10 @@ const TitleCard = ({ isComplete, theme }) => {
                 <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
                     width="1179.000000pt" height="492.000000pt" viewBox="0 250 1179.000000 492.000000"
                     preserveAspectRatio="xMidYMid meet">
-                    <g transform="translate(0.000000,492.000000) scale(0.100000,-0.100000)" 
+                    <g transform="translate(-200.000000,500.000000) scale(0.030000,-0.10000)" 
                         stroke={`${ isComplete ? themeColors[theme].svg : themeColors[theme].default.svg }`} 
                         strokeWidth="28" fill="none">
+                        <g transform="scale(4.5,1.7)">
                         <path 
                             d="m8922 643 c14 -13 18 -31 18 -85 0 -77 -12 -107 -62 -155 -32 -31 -156
                             -94 -211 -108 -15 -4 -26 -12 -24 -19 5 -17 482 -253 560 -276 37 -12 67 -23
@@ -67,16 +68,18 @@ const TitleCard = ({ isComplete, theme }) => {
                             -9 -119 8 -33 8 -107 19 -164 22 -68 5 -106 11 -108 19 -3 7 7 15 21 19 76 19
                             273 303 264 381 -5 47 -35 41 -90 -18 -38 -40 -70 -96 -139 -238 -152 -312
                             -162 -331 -177 -331 -8 0 -12 6 -9 13 4 6 37 83 75 170 38 87 74 162 81 166 6
-                            4 30 43 52 86 82 161 173 247 217 203z"/>
-                        <path d="M7489 2898 c-57 -39 -234 -296 -215 -315 14 -14 87 20 134 62 75 67
-                            148 219 125 260 -8 14 -13 13 -44 -7z"/>
+                            4 30 43 52 86 82 161 173 247 217 203z"
+                        />
+                        </g>
                     </g>
                 </svg>
 
                 <button
                     className={`flex justify-center font-rock-salt cursor-pointer text-xs 
                         font-bold ring-1 py-3 px-8 w-24 mt-8 mb-6 rounded-lg
-                        ${ isComplete ? themeColors[theme].text : themeColors[theme].default.text } hover:animate-pulse`}
+                        ${ isComplete ? themeColors[theme].text : themeColors[theme].default.text } 
+                        hover:animate-pulse ${ isComplete ? `hover:bg-${themeColors[theme].color} 
+                        hover:text-${themeColors[theme].bgColor}` : "hover:bg-transparent"}`}
                 >
                     Enter
                 </button>

@@ -4,6 +4,7 @@ export const themeColors = {
         stroke: "stroke-cyan-400",
         svg: "#fecdd3",
         text: "text-rose-200",
+        color: "rose-200",
         default: {
             svg: "#0ea5e9",
             text: "text-sky-500"
@@ -14,6 +15,7 @@ export const themeColors = {
         stroke: "stroke-blue-600",
         svg: "#22d3ee",
         text: "text-cyan-500",
+        color: "cyan-500",
         default: {
             svg: "#334155",
             text: "text-gray-700"
