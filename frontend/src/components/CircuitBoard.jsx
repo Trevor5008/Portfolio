@@ -9,10 +9,9 @@ const CircuitBoard = ({
   registerPolyPath,
   registerLinePath,
   setIsComplete,
-  theme,
   pathColor,
   isComplete,
-  handleSwitch,
+  theme,
 }) => {
   // Converts polyline coords to path 'd' property format
   function polylineToPath(pointsStr) {
@@ -22,7 +21,7 @@ const CircuitBoard = ({
 
   return (
     <div id="main-content">
-      <ThemeSwitch theme={theme} handleSwitch={handleSwitch} />
+      <ThemeSwitch />
       <svg
         className="w-full h-screen"
         viewBox="0 0 960 560"

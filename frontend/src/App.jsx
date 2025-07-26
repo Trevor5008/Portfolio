@@ -3,12 +3,11 @@ import { gsap } from "gsap";
 import CircuitBoard from "./components/CircuitBoard";
 import TitleCard from "./components/TitleCard";
 import { themeColors } from "./data/themes.js";
+import { useTheme } from "./components/ThemeContext.jsx";
 
 function App() {
+  const { theme } = useTheme();
   const [isComplete, setIsComplete] = useState(false);
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
-  const [bgColor, setBgColor] = useState(themeColors[theme].bgColor);
-  const [pathColor, setPathColor] = useState(themeColors[theme].stroke);
 
   const polyPaths = useRef([]);
   const linePaths = useRef([]);
@@ -69,25 +68,15 @@ function App() {
     );
   }, [theme]);
 
-  const handleThemeChange = () => {
-    let newTheme = theme == "dark" ? "light" : "dark";
-    localStorage.setItem("theme", newTheme);
-    setIsComplete(false);
-    setTheme(newTheme);
-    setBgColor(themeColors[newTheme].bgColor);
-    setPathColor(themeColors[newTheme].stroke);
-  };
-
   return (
-    <div className={bgColor}>
+    <div className={themeColors[theme].bgColor}>
       <CircuitBoard
         registerPolyPath={registerPolyPath}
         registerLinePath={registerLinePath}
-        pathColor={pathColor}
+        pathColor={themeColors[theme].stroke}
         setIsComplete={setIsComplete}
         isComplete={isComplete}
         theme={theme}
-        handleSwitch={handleThemeChange}
       />
       <TitleCard isComplete={isComplete} theme={theme} />
     </div>
