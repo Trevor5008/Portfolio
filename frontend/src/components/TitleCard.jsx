@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { themeColors } from "../data/themes.js";
 import { namePath } from "../data/namePath.js";
 
@@ -34,7 +35,7 @@ absolute inset-0 flex flex-col items-center justify-center`}
           className={`flex justify-center z-2 font-rock-salt cursor-pointer text-xs font-bold ring-1 py-3 px-8 w-24 mt-8 mb-6 rounded-lg hover:animate-pulse 
         ${isComplete ? themeColors[theme].hover : ""}`}
         >
-          Enter
+          <Link to="/home">Enter</Link>
         </button>
       </div>
     </div>
