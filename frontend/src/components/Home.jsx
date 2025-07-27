@@ -1,7 +1,7 @@
 import { themeColors } from "../data/themes";
 import { useTheme } from "./ThemeContext";
 
-const Test = () => {
+const Home = () => {
   const { theme } = useTheme();
   return (
     <div
@@ -12,4 +12,4 @@ const Test = () => {
   );
 };
 
-export default Test;
+export default Home;
