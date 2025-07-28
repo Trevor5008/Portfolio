@@ -1,6 +1,6 @@
 import { themeColors } from "../data/themes";
-import { useTheme } from "./ThemeContext";
-import Header from "./Header";
+import { useTheme } from "../components/ThemeContext";
+import Header from "../components/Header";
 
 const Home = () => {
   const { theme } = useTheme();
