@@ -21,7 +21,7 @@ const CircuitBoard = ({
 
   return (
     <div id="main-content">
-      <ThemeSwitch />
+      <ThemeSwitch position="absolute" />
       <svg
         className="w-full h-screen"
         viewBox="0 0 960 560"
