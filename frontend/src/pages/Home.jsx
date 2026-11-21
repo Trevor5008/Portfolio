@@ -1,8 +1,10 @@
 import { Link } from "react-router";
 import CircuitHero from "../components/CircuitHero";
+import ProjectCard from "../components/ProjectCard";
 import { useTheme } from "../components/useTheme";
 import { themeColors } from "../data/themes";
 import { site } from "../data/site";
+import { featuredProjects } from "../data/projects";
 
 const Home = () => {
   const { theme } = useTheme();
@@ -33,6 +35,11 @@ const Home = () => {
             Selected software, interactive cryptography, and local-first mobile
             systems.
           </p>
+          <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {featuredProjects.slice(0, 3).map((project) => (
+              <ProjectCard key={project.slug} project={project} />
+            ))}
+          </div>
         </section>
 
         {/* 3. What I work on */}
