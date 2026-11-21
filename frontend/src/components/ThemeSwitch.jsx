@@ -1,11 +1,14 @@
 import { themeColors } from "../data/themes";
+import { useTheme } from "./useTheme";
 
-const ThemeSwitch = ({ theme, handleSwitch }) => {
+const ThemeSwitch = ({ position }) => {
+  const { theme, toggleTheme } = useTheme();
+
   return (
     <div
-      onClick={handleSwitch}
+      onClick={toggleTheme}
       className={`${themeColors[theme].ring} ${themeColors[theme].bgColor} 
-                opacity-70 absolute z-2 ring-1 top-6 right-1/16 
+                opacity-70 ${position} z-2 ring-1 top-6 right-1/16 
                 flex p-1 max-w-24 w-1/12 justify-center rounded-lg hover:animate-pulse`}
     >
       <input

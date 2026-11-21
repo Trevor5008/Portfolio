@@ -1,0 +1,19 @@
+import { themeColors } from "../data/themes";
+import { useTheme } from "../components/useTheme";
+import Header from "../components/Header";
+
+const Blog = () => {
+  const { theme } = useTheme();
+  return (
+    <div
+      className={`flex-col justify-start w-full h-screen ${themeColors[theme].bgColor}`}
+    >
+      <Header theme={theme} />
+      <div className={`flex justify-center h-screen items-center `}>
+        <h1 className={`text-center ${themeColors[theme].text}`}>Blog</h1>
+      </div>
+    </div>
+  );
+};
+
+export default Blog;

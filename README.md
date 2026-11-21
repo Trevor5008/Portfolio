@@ -1,5 +1,5 @@
 # Personal Portfolio
-Tech Stack: Flask(Backend) | Vite + Tailwind (Fronted) | PostCSS | SVG Animation
+Tech Stack: React | Vite + Tailwind CSS | GSAP SVG Animation
 
 In Progress..
 
