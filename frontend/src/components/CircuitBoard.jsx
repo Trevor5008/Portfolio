@@ -7,7 +7,6 @@ import linePaths from "../data/linePaths.js";
 const CircuitBoard = ({
   registerPolyPath,
   registerLinePath,
-  setIsComplete,
   pathColor,
   isComplete,
   theme,
@@ -27,15 +26,13 @@ const CircuitBoard = ({
         focusable="false"
         className="h-full w-full"
         viewBox="0 0 960 560"
-        preserveAspectRatio="none"
+        preserveAspectRatio="xMidYMid slice"
       >
         <g id="lines">
           {polyLines.map((node, key) => (
             <AnimatedPath
               register={registerPolyPath}
               pathColor={pathColor}
-              theme={theme}
-              setIsComplete={setIsComplete}
               idx={key}
               key={key}
               d={polylineToPath(node.points)}
@@ -45,8 +42,6 @@ const CircuitBoard = ({
             <AnimatedPath
               register={registerLinePath}
               pathColor={pathColor}
-              theme={theme}
-              setIsComplete={setIsComplete}
               idx={key}
               key={key}
               d={node}

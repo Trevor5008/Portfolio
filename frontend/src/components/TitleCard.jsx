@@ -9,24 +9,22 @@ const TitleCard = ({ theme }) => {
   return (
     <div
       id="titleCard"
-      className="relative z-10 mx-auto flex max-w-2xl flex-col items-center px-4 py-12 text-center sm:px-6"
+      className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center px-4 py-12 text-center sm:px-6"
     >
       <div
-        className={`flex flex-col items-center rounded-2xl px-6 py-8 backdrop-blur-[2px] ${palette.heroScrim}`}
+        className={`flex w-full flex-col items-center rounded-2xl px-4 py-8 sm:px-8 backdrop-blur-[2px] ${palette.heroScrim}`}
       >
         <svg
           aria-hidden="true"
           focusable="false"
           version="1.0"
           xmlns="http://www.w3.org/2000/svg"
-          width="1179.000000pt"
-          height="492.000000pt"
-          viewBox="0 250 1179.000000 492.000000"
+          viewBox="0 250 1179 492"
           preserveAspectRatio="xMidYMid meet"
-          className="max-w-full h-auto max-h-40 sm:max-h-52"
+          className="h-auto w-[min(80vw,640px)]"
         >
           <g
-            transform="translate(-200.000000,500.000000) scale(0.030000,-0.10000)"
+            transform="translate(-200,500) scale(0.03,-0.1)"
             stroke={palette.svg}
             strokeWidth="28"
             fill="none"

@@ -4,10 +4,16 @@ import CircuitBoard from "./CircuitBoard";
 import TitleCard from "./TitleCard";
 import { themeColors } from "../data/themes.js";
 import { useTheme } from "./useTheme.js";
+import { useReducedMotion } from "../hooks/useReducedMotion.js";
+
+let hasPlayedIntro = false;
 
 const CircuitHero = () => {
   const { theme } = useTheme();
-  const [isComplete, setIsComplete] = useState(false);
+  const reducedMotion = useReducedMotion();
+  const [isComplete, setIsComplete] = useState(
+    () => reducedMotion || hasPlayedIntro,
+  );
   const palette = themeColors[theme];
 
   const polyPaths = useRef([]);
@@ -26,62 +32,53 @@ const CircuitHero = () => {
   };
 
   useLayoutEffect(() => {
-    const validPolyPaths = polyPaths.current.filter(
-      (p) => p && p.getTotalLength() > 0,
+    const allPaths = [...polyPaths.current, ...linePaths.current].filter(
+      (p) => p && typeof p.getTotalLength === "function" && p.getTotalLength() > 0,
     );
-    validPolyPaths.forEach((path) => {
+
+    if (reducedMotion || hasPlayedIntro) {
+      allPaths.forEach((path) => {
+        path.style.strokeDasharray = "";
+        path.style.strokeDashoffset = "0";
+      });
+      setIsComplete(true);
+      hasPlayedIntro = true;
+      return undefined;
+    }
+
+    allPaths.forEach((path) => {
       const length = path.getTotalLength();
-      path.style.strokeDasharray = length;
-      path.style.strokeDashoffset = length;
+      path.style.strokeDasharray = `${length}`;
+      path.style.strokeDashoffset = `${length}`;
     });
 
     const t1 = gsap.timeline({
-      onStart: () => setIsComplete(false),
-      onComplete: () => setIsComplete(true),
+      onComplete: () => {
+        hasPlayedIntro = true;
+        setIsComplete(true);
+      },
       ease: "power2.inOut",
     });
 
-    t1.add("circuits");
-    t1.to(
-      validPolyPaths,
-      {
-        strokeDashoffset: 0,
-        duration: 3.5,
-      },
-      "circuits",
-    );
-
-    const validLinePaths = linePaths.current.filter(
-      (p) => p && p.getTotalLength() > 0,
-    );
-    validLinePaths.forEach((path) => {
-      const length = path.getTotalLength();
-      path.style.strokeDasharray = length;
-      path.style.strokeDashoffset = length;
+    t1.to(allPaths, {
+      strokeDashoffset: 0,
+      duration: 3.5,
     });
 
-    t1.to(
-      validLinePaths,
-      {
-        strokeDashoffset: 0,
-        duration: 3.5,
-      },
-      "circuits",
-    );
-
-    return () => t1.kill();
-  }, [theme]);
+    return () => {
+      t1.kill();
+    };
+  }, [reducedMotion]);
 
   return (
     <section
       aria-label="Introduction"
-      className={`relative flex min-h-[520px] w-full items-center justify-center overflow-hidden border-b ${palette.border} md:min-h-[calc(100vh-4rem)]`}
+      className={`relative flex min-h-[500px] w-full items-center justify-center overflow-hidden border-b ${palette.border} md:min-h-[calc(100vh-4rem)]`}
     >
       <CircuitBoard
         registerPolyPath={registerPolyPath}
         registerLinePath={registerLinePath}
         pathColor={palette.stroke}
-        setIsComplete={setIsComplete}
         isComplete={isComplete}
         theme={theme}
       />
