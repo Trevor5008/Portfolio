@@ -1,19 +1,15 @@
 import { themeColors } from "../data/themes";
 import { useTheme } from "../components/useTheme";
-import Header from "../components/Header";
 
 const Projects = () => {
   const { theme } = useTheme();
 
   return (
-    <div
-      className={`flex-col justify-start w-full h-screen ${themeColors[theme].bgColor}`}
-    >
-      <Header theme={theme} />
-      <div className={`flex justify-center h-screen items-center `}>
-        <h1 className={`text-center ${themeColors[theme].text}`}>Projects</h1>
-      </div>
-    </div>
+    <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+      <h1 className={`text-3xl font-bold ${themeColors[theme].text}`}>
+        Projects
+      </h1>
+    </section>
   );
 };
 

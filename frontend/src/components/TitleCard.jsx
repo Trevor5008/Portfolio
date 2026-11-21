@@ -31,12 +31,13 @@ absolute inset-0 flex flex-col items-center justify-center`}
           </g>
         </svg>
 
-        <button
-          className={`flex justify-center z-2 font-rock-salt cursor-pointer text-xs font-bold ring-1 py-3 px-8 w-24 mt-8 mb-6 rounded-lg hover:animate-pulse 
+        <Link
+          to="/projects"
+          className={`inline-flex min-h-11 items-center justify-center z-2 font-rock-salt text-xs font-bold ring-1 py-3 px-8 mt-8 mb-6 rounded-lg 
         ${isComplete ? themeColors[theme].hover : ""}`}
         >
-          <Link to="/home">Enter</Link>
-        </button>
+          Projects
+        </Link>
       </div>
     </div>
   );
