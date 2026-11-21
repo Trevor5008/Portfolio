@@ -5,10 +5,13 @@ import { useTheme } from "../components/useTheme";
 import { themeColors } from "../data/themes";
 import { site } from "../data/site";
 import { featuredProjects } from "../data/projects";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 const Home = () => {
   const { theme } = useTheme();
   const palette = themeColors[theme];
+
+  useDocumentTitle(`${site.name} | ${site.role}`);
 
   return (
     <div>

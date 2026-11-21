@@ -1,10 +1,14 @@
 import { Link } from "react-router";
+import { site } from "../data/site";
 import { themeColors } from "../data/themes";
 import { useTheme } from "../components/useTheme";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 const NotFound = () => {
   const { theme } = useTheme();
   const palette = themeColors[theme];
+
+  useDocumentTitle(`Page Not Found | ${site.name}`);
 
   return (
     <section className="mx-auto flex max-w-3xl flex-col items-start gap-4 px-4 py-16 sm:px-6">

@@ -1,11 +1,15 @@
 import ProjectCard from "../components/ProjectCard";
 import { projects } from "../data/projects";
+import { site } from "../data/site";
 import { themeColors } from "../data/themes";
 import { useTheme } from "../components/useTheme";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 const Projects = () => {
   const { theme } = useTheme();
   const palette = themeColors[theme];
+
+  useDocumentTitle(`Projects | ${site.name}`);
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">

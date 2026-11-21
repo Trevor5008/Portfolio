@@ -1,9 +1,10 @@
-import { useEffect } from "react";
 import { Link, useParams } from "react-router";
 import NotFound from "./NotFound";
 import { getProjectBySlug } from "../data/projects";
+import { site } from "../data/site";
 import { themeColors } from "../data/themes";
 import { useTheme } from "../components/useTheme";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 const hasText = (value) => typeof value === "string" && value.trim().length > 0;
 
@@ -13,11 +14,7 @@ const CaseStudy = () => {
   const palette = themeColors[theme];
   const project = getProjectBySlug(slug);
 
-  useEffect(() => {
-    if (project) {
-      document.title = `${project.title} | Trevor Werner`;
-    }
-  }, [project]);
+  useDocumentTitle(project ? `${project.title} | ${site.name}` : "");
 
   if (!project) {
     return <NotFound />;
