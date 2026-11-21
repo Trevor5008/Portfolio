@@ -2,6 +2,8 @@ export const themeColors = {
   light: {
     bgColor: "bg-blue-900",
     stroke: "stroke-cyan-400",
+    circleStroke: "stroke-rose-200",
+    circleFill: "fill-cyan-100",
     ring: "ring-rose-200",
     svg: "#fecdd3",
     text: "text-rose-200",
@@ -15,6 +17,8 @@ export const themeColors = {
   dark: {
     bgColor: "bg-neutral-950",
     stroke: "stroke-blue-600",
+    circleStroke: "stroke-cyan-400",
+    circleFill: "fill-cyan-600",
     ring: "ring-cyan-500",
     svg: "#22d3ee",
     text: "text-cyan-500",
