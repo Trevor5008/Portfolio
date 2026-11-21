@@ -1,5 +1,5 @@
 import { themeColors } from "../data/themes";
-import { useTheme } from "./ThemeContext";
+import { useTheme } from "./useTheme";
 
 const ThemeSwitch = ({ position }) => {
   const { theme, toggleTheme } = useTheme();

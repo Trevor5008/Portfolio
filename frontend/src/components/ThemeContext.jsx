@@ -1,6 +1,5 @@
-import { createContext, useContext, useState, useEffect } from "react";
-
-const ThemeContext = createContext(null);
+import { useState, useEffect } from "react";
+import { ThemeContext } from "./useTheme";
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
@@ -14,10 +13,4 @@ export const ThemeProvider = ({ children }) => {
   };
 
   return <ThemeContext value={{ theme, toggleTheme }}>{children}</ThemeContext>;
-};
-
-export const useTheme = () => {
-  const ctx = useContext(ThemeContext);
-  if (!ctx) throw new Error("useTheme must be used w/in ThemeProvider");
-  return ctx;
 };

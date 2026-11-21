@@ -1,5 +1,5 @@
 import { themeColors } from "../data/themes";
-import { useTheme } from "../components/ThemeContext";
+import { useTheme } from "../components/useTheme";
 import Header from "../components/Header";
 
 const Blog = () => {

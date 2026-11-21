@@ -3,7 +3,7 @@ import { gsap } from "gsap";
 import CircuitBoard from "./components/CircuitBoard";
 import TitleCard from "./components/TitleCard";
 import { themeColors } from "./data/themes.js";
-import { useTheme } from "./components/ThemeContext.jsx";
+import { useTheme } from "./components/useTheme.js";
 
 function App() {
   const { theme } = useTheme();
@@ -35,6 +35,7 @@ function App() {
     });
 
     const t1 = gsap.timeline({
+      onStart: () => setIsComplete(false),
       onComplete: () => setIsComplete(true),
       ease: "power2.inOut",
     });
@@ -66,6 +67,8 @@ function App() {
       },
       "circuits",
     );
+
+    return () => t1.kill();
   }, [theme]);
 
   return (
