@@ -1,6 +1,40 @@
 # Trevor Werner — Portfolio
 
+[![Version](https://img.shields.io/badge/version-0.3.0-blue)](CHANGELOG.md)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![React Router](https://img.shields.io/badge/React_Router-7-CA4245?logo=reactrouter&logoColor=white)](https://reactrouter.com/)
+[![GSAP](https://img.shields.io/badge/GSAP-3.13-88CE02)](https://gsap.com/)
+[![Vitest](https://img.shields.io/badge/Vitest-5-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
+
 Static personal portfolio and engineering case-study site built with **React 19**, **Vite 6**, **Tailwind CSS 4**, **GSAP**, and **React Router 7**.
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Local Development & Verification](#local-development--verification)
+- [Static Deployment (Render)](#static-deployment-render)
+- [Changelog](#changelog)
+- [Credits & Contact](#credits--contact)
+- [License](#license)
+
+---
+
+## Overview
+
+This repository powers the personal portfolio for **Trevor Werner** (*Software & Applied AI Engineer*). It serves as a fast, accessible presentation layer over software engineering, interactive cryptography, local-first mobile, data pipeline, and applied machine learning projects, with GitHub repositories serving as the source of technical evidence.
+
+Key architectural characteristics:
+
+- **Single sources of truth:** Identity, skills, and contact links live in [`frontend/src/data/site.js`](frontend/src/data/site.js); all featured cards, project index entries, and case-study routes derive from [`frontend/src/data/projects.js`](frontend/src/data/projects.js).
+- **Accessible & motion-safe:** Semantic landmarks, keyboard-operable desktop and mobile navigation, `>= 44x44px` touch targets, and `prefers-reduced-motion` support on the GSAP circuit-board hero.
+- **Zero-backend static SPA:** Deploys directly as static assets with an SPA rewrite rule for clean deep links.
 
 ---
 
@@ -8,7 +42,7 @@ Static personal portfolio and engineering case-study site built with **React 19*
 
 - **UI & Routing:** React 19, React Router 7 (`BrowserRouter`), Tailwind CSS 4 (`@tailwindcss/vite`)
 - **SVG & Motion:** Custom SVG circuit-board hero animated with GSAP (`prefers-reduced-motion` aware)
-- **Verification:** Vitest, jsdom, React Testing Library, ESLint 9
+- **Verification:** Vitest 5, jsdom, React Testing Library, ESLint 9
 - **Deployment:** Static Single-Page Application (Render Static Site)
 
 ---
@@ -17,8 +51,10 @@ Static personal portfolio and engineering case-study site built with **React 19*
 
 ```text
 Portfolio/
-├── render.yaml                     # Render Static Site blueprint + SPA rewrite rule
+├── CHANGELOG.md                    # Release history (Keep a Changelog)
+├── LICENSE                         # GNU General Public License v3.0
 ├── README.md
+├── render.yaml                     # Render Static Site blueprint + SPA rewrite rule
 └── frontend/
     ├── index.html                  # Document metadata, Open Graph tags, SVG favicon
     ├── public/
@@ -69,9 +105,21 @@ This repository includes [`render.yaml`](render.yaml) for deploying as a **Rende
 
 ---
 
+## Changelog
+
+Release history and notable architectural changes are tracked in [`CHANGELOG.md`](CHANGELOG.md).
+
+---
+
 ## Credits & Contact
 
 - Circuit-board SVG layout inspired by Christopher Prins ([Original CodePen](https://codepen.io/christopherprins/pen/rZZWoj)).
 - **GitHub:** [github.com/Trevor5008](https://github.com/Trevor5008)
 - **LinkedIn:** [linkedin.com/in/trevor-werner](https://www.linkedin.com/in/trevor-werner)
 - **Email:** [twern005@fiu.edu](mailto:twern005@fiu.edu)
+
+---
+
+## License
+
+Distributed under the **GNU General Public License v3.0**. See [`LICENSE`](LICENSE) for details.
