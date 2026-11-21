@@ -8,6 +8,7 @@ import { useTheme } from "./useTheme.js";
 const CircuitHero = () => {
   const { theme } = useTheme();
   const [isComplete, setIsComplete] = useState(false);
+  const palette = themeColors[theme];
 
   const polyPaths = useRef([]);
   const linePaths = useRef([]);
@@ -72,16 +73,19 @@ const CircuitHero = () => {
   }, [theme]);
 
   return (
-    <section className="relative w-full overflow-hidden">
+    <section
+      aria-label="Introduction"
+      className={`relative flex min-h-[520px] w-full items-center justify-center overflow-hidden border-b ${palette.border} md:min-h-[calc(100vh-4rem)]`}
+    >
       <CircuitBoard
         registerPolyPath={registerPolyPath}
         registerLinePath={registerLinePath}
-        pathColor={themeColors[theme].stroke}
+        pathColor={palette.stroke}
         setIsComplete={setIsComplete}
         isComplete={isComplete}
         theme={theme}
       />
-      <TitleCard isComplete={isComplete} theme={theme} />
+      <TitleCard theme={theme} />
     </section>
   );
 };

@@ -1,6 +1,7 @@
 export const themeColors = {
   light: {
     bgColor: "bg-blue-900",
+    heroScrim: "bg-blue-900/80",
     surface: "bg-blue-950/60",
     stroke: "stroke-cyan-400",
     circleStroke: "stroke-rose-200",
@@ -26,6 +27,7 @@ export const themeColors = {
   },
   dark: {
     bgColor: "bg-neutral-950",
+    heroScrim: "bg-neutral-950/80",
     surface: "bg-neutral-900/70",
     stroke: "stroke-blue-600",
     circleStroke: "stroke-cyan-400",

@@ -18,9 +18,14 @@ const CircuitBoard = ({
   }
 
   return (
-    <div id="main-content" className="w-full">
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 h-full w-full"
+    >
       <svg
-        className="w-full h-screen"
+        aria-hidden="true"
+        focusable="false"
+        className="h-full w-full"
         viewBox="0 0 960 560"
         preserveAspectRatio="none"
       >
