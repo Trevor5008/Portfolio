@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useLocation } from "react-router";
 import ThemeSwitch from "./ThemeSwitch";
 import { useTheme } from "./useTheme";
@@ -16,6 +16,7 @@ const Header = () => {
   const { theme } = useTheme();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuButtonRef = useRef(null);
   const palette = themeColors[theme];
 
   useEffect(() => {
@@ -28,6 +29,7 @@ const Header = () => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
         setMenuOpen(false);
+        menuButtonRef.current?.focus();
       }
     };
 
@@ -87,6 +89,7 @@ const Header = () => {
         <div className="flex items-center gap-2 md:hidden">
           <ThemeSwitch />
           <button
+            ref={menuButtonRef}
             type="button"
             aria-expanded={menuOpen}
             aria-controls="mobile-primary-menu"

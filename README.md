@@ -1,51 +1,77 @@
-# Personal Portfolio
-Tech Stack: React | Vite + Tailwind CSS | GSAP SVG Animation
+# Trevor Werner — Portfolio
 
-In Progress..
-
----
-
-### Overview
-
-This is the source code for my personal portfolio-designed to be a clean, fast and expressive representation of my technical skillset and creative direction.
-
-### Features
-
-- Custom landing page w/ animated SVG circuit board background
-- Modular component-based architecture (React + Tailwind)
-- Theme toggle (dark/light mode planned)
-- Responsive layout optimized for desktop-first viewing
-- Project cards w/ descriptions and links
+Static personal portfolio and engineering case-study site built with **React 19**, **Vite 6**, **Tailwind CSS 4**, **GSAP**, and **React Router 7**.
 
 ---
 
-### Goals
+## Tech Stack
 
-- Provide a professional online presence for freelance and networking purposes
-- Demonstrate technical range across frontend and backend stacks
-- Explore SVG animation and interaction
-- Expand my knowledge and capability in UI/UX design
-
----
-
-### Planned Enhancements
-
-- Project blog / journal w/ Markdown support
-- Theme toggling and accessibility improvements
-- Section transitions and smoother animations
-- Backend connecction for contact form
+- **UI & Routing:** React 19, React Router 7 (`BrowserRouter`), Tailwind CSS 4 (`@tailwindcss/vite`)
+- **SVG & Motion:** Custom SVG circuit-board hero animated with GSAP (`prefers-reduced-motion` aware)
+- **Verification:** Vitest, jsdom, React Testing Library, ESLint 9
+- **Deployment:** Static Single-Page Application (Render Static Site)
 
 ---
 
-### Credits & Inspiration
+## Project Structure
 
-- SVG animation by Christopher Prins - inspiration for landing page background
-- [Original Pen](https://codepen.io/christopherprins/pen/rZZWoj)
-- Typography and layout ideas drawn from various CodePen and Dribbble explorations
+```text
+Portfolio/
+├── render.yaml                     # Render Static Site blueprint + SPA rewrite rule
+├── README.md
+└── frontend/
+    ├── index.html                  # Document metadata, Open Graph tags, SVG favicon
+    ├── public/
+    │   └── favicon.svg
+    └── src/
+        ├── main.jsx                # Root providers (BrowserRouter, ThemeProvider)
+        ├── App.jsx                 # Application route table
+        ├── components/             # Shared UI (Layout, Header, Footer, CircuitHero, ProjectCard, ThemeSwitch)
+        ├── pages/                  # Route views (Home, Projects, CaseStudy, About, Contact, NotFound)
+        ├── data/                   # Single sources of truth (site.js, projects.js, themes.js, protected SVG paths)
+        ├── hooks/                  # Custom hooks (useDocumentTitle, useReducedMotion)
+        ├── test/                   # Vitest + jsdom setup
+        └── __tests__/              # Component, routing, and accessibility tests
+```
 
-### Contact Me
+---
 
-- [LinkedIn](https://www.linkedin.com/in/trevor-werner)
-- Email: twern005@fiu.edu
+## Local Development & Verification
 
-### Thanks for visiting!
+All frontend commands run from `frontend/`:
+
+```bash
+cd frontend
+npm ci
+npm run dev
+```
+
+Run the verification suite before committing or deploying:
+
+```bash
+cd frontend
+npm run test:run   # Vitest component & accessibility suite
+npm run lint       # ESLint check
+npm run build      # Production static bundle -> frontend/dist/
+npm run preview    # Preview production bundle locally
+```
+
+---
+
+## Static Deployment (Render)
+
+This repository includes [`render.yaml`](render.yaml) for deploying as a **Render Static Site**:
+
+- **Root Directory:** `frontend`
+- **Build Command:** `npm ci && npm run build`
+- **Publish Directory:** `dist`
+- **SPA Deep-Link Rewrite:** `/*` -> `/index.html` (`Rewrite`) so direct refreshes on `/projects/:slug`, `/about`, and `/contact` resolve through `BrowserRouter`.
+
+---
+
+## Credits & Contact
+
+- Circuit-board SVG layout inspired by Christopher Prins ([Original CodePen](https://codepen.io/christopherprins/pen/rZZWoj)).
+- **GitHub:** [github.com/Trevor5008](https://github.com/Trevor5008)
+- **LinkedIn:** [linkedin.com/in/trevor-werner](https://www.linkedin.com/in/trevor-werner)
+- **Email:** [twern005@fiu.edu](mailto:twern005@fiu.edu)
