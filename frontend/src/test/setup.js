@@ -4,7 +4,7 @@ import { cleanup } from "@testing-library/react";
 
 vi.mock("gsap", () => ({
   gsap: {
-    timeline: ({ onStart, onComplete } = {}) => {
+    timeline: vi.fn(({ onStart, onComplete } = {}) => {
       onStart?.();
       onComplete?.();
       return {
@@ -12,7 +12,7 @@ vi.mock("gsap", () => ({
         to: vi.fn().mockReturnThis(),
         kill: vi.fn(),
       };
-    },
+    }),
   },
 }));
 
