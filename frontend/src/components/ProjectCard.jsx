@@ -3,7 +3,7 @@ import { useTheme } from "./useTheme";
 import { themeColors } from "../data/themes";
 
 const STATUS_META = {
-  live: { label: "Live Demo", indicator: "●" },
+  live: { label: "Live", indicator: "●" },
   "in-progress": { label: "In Progress", indicator: "◌" },
   archived: { label: "Archived", indicator: "▪" },
 };

@@ -136,6 +136,16 @@ const Home = () => {
             >
               LinkedIn
             </a>
+            {site.resumeUrl ? (
+              <a
+                href={site.resumeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex min-h-11 items-center justify-center rounded-lg border px-5 py-2.5 text-sm font-medium transition-colors duration-150 ${palette.border} ${palette.bodyText} ${palette.subtleHover} ${palette.focusRing}`}
+              >
+                Resume
+              </a>
+            ) : null}
           </div>
         </section>
       </div>

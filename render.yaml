@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: trevor-werner-portfolio
+    name: portfolio-r88y
     runtime: static
     rootDir: frontend
     buildCommand: npm ci && npm run build

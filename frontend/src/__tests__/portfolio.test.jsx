@@ -1,9 +1,11 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
+import { gsap } from "gsap";
 import App from "../App";
 import { ThemeProvider } from "../components/ThemeContext";
+import { resetCircuitIntro } from "../components/introState";
 import ProjectCard from "../components/ProjectCard";
 import { projects, featuredProjects } from "../data/projects";
 import { site } from "../data/site";
@@ -20,7 +22,9 @@ const renderAtRoute = (initialEntry = "/") =>
 describe("Portfolio structure and accessibility", () => {
   beforeEach(() => {
     localStorage.clear();
-    site.resumeUrl = "";
+    resetCircuitIntro();
+    gsap.timeline.mockClear();
+    site.resumeUrl = "/resume.pdf";
   });
 
   it("renders Header, active-route main content, and Footer inside Layout", () => {
@@ -71,7 +75,20 @@ describe("Portfolio structure and accessibility", () => {
       name: /close navigation menu/i,
     });
     expect(closeButton).toHaveAttribute("aria-expanded", "true");
-    expect(document.getElementById("mobile-primary-menu")).not.toBeNull();
+
+    const primaryNav = screen.getByRole("navigation", { name: "Primary" });
+    const mobileMenu = document.getElementById("mobile-primary-menu");
+    expect(mobileMenu).not.toBeNull();
+    expect(primaryNav.contains(mobileMenu)).toBe(true);
+    expect(
+      within(primaryNav).getAllByRole("link", { name: "Projects" }).length,
+    ).toBeGreaterThanOrEqual(2);
+    expect(
+      within(primaryNav).getAllByRole("link", { name: "About" }).length,
+    ).toBeGreaterThanOrEqual(2);
+    expect(
+      within(primaryNav).getAllByRole("link", { name: "Contact" }).length,
+    ).toBeGreaterThanOrEqual(2);
 
     await user.keyboard("{Escape}");
     expect(
@@ -83,8 +100,8 @@ describe("Portfolio structure and accessibility", () => {
     await user.click(
       screen.getByRole("button", { name: /open navigation menu/i }),
     );
-    const mobileMenu = document.getElementById("mobile-primary-menu");
-    await user.click(within(mobileMenu).getByRole("link", { name: "About" }));
+    const reopenedMenu = document.getElementById("mobile-primary-menu");
+    await user.click(within(reopenedMenu).getByRole("link", { name: "About" }));
 
     expect(
       screen.getByRole("heading", { level: 1, name: "About" }),
@@ -160,6 +177,9 @@ describe("Portfolio structure and accessibility", () => {
       screen.getByRole("link", { name: rsaProject.title }),
     ).toHaveAttribute("href", `/projects/${rsaProject.slug}`);
 
+    expect(screen.getByText("Live")).toBeInTheDocument();
+    expect(screen.getAllByText("Live Demo")).toHaveLength(1);
+
     expect(
       screen.getByRole("link", { name: `${rsaProject.title} live demo` }),
     ).toHaveAttribute("href", rsaProject.links.demo);
@@ -171,13 +191,42 @@ describe("Portfolio structure and accessibility", () => {
     ).toHaveAttribute("href", rsaProject.links.repo);
   });
 
-  it("renders known case-study slugs and renders NotFound for unknown slugs", () => {
+  it("renders the full structured RSA Learning Lab case study and NotFound for unknown slugs", () => {
     const { unmount } = renderAtRoute("/projects/rsa-learning-lab");
 
     expect(
       screen.getByRole("heading", { level: 1, name: "RSA Learning Lab" }),
     ).toBeInTheDocument();
     expect(document.title).toBe("RSA Learning Lab | Trevor Werner");
+    expect(
+      document.querySelector('link[rel="canonical"]'),
+    ).toHaveAttribute(
+      "href",
+      "https://trevorwerner.com/projects/rsa-learning-lab",
+    );
+
+    for (const sectionHeading of [
+      "Problem",
+      "Role and contribution",
+      "Solution",
+      "Stack",
+      "Engineering decisions",
+      "Outcome and limitations",
+      "Project links",
+    ]) {
+      expect(
+        screen.getByRole("heading", { level: 2, name: sectionHeading }),
+      ).toBeInTheDocument();
+    }
+    expect(
+      screen.queryByRole("heading", {
+        level: 2,
+        name: "Case study in preparation",
+      }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { level: 2, name: "Evidence" }),
+    ).toBeNull();
 
     unmount();
     renderAtRoute("/projects/non-existent-project");
@@ -185,6 +234,7 @@ describe("Portfolio structure and accessibility", () => {
     expect(
       screen.getByRole("heading", { level: 1, name: "Page not found" }),
     ).toBeInTheDocument();
+    expect(document.querySelector('link[rel="canonical"]')).toBeNull();
   });
 
   it("omits empty optional case-study sections and shows in-preparation state when narrative is empty", () => {
@@ -257,13 +307,50 @@ describe("Portfolio structure and accessibility", () => {
     }
   });
 
-  it("omits conditional Resume links across routes when resumeUrl is empty", () => {
-    site.resumeUrl = "";
+  it("renders working /resume.pdf links across Home, About, Contact, and Footer by default and omits them when empty", () => {
+    // Default configured state (/resume.pdf)
+    const homeView = renderAtRoute("/");
+    const homeResumeLinks = screen.getAllByRole("link", { name: /resume/i });
+    expect(homeResumeLinks.length).toBeGreaterThanOrEqual(2);
+    homeResumeLinks.forEach((link) => {
+      expect(link).toHaveAttribute("href", "/resume.pdf");
+    });
+    homeView.unmount();
 
-    for (const route of ["/", "/about", "/contact"]) {
-      const { unmount } = renderAtRoute(route);
-      expect(screen.queryByRole("link", { name: /resume/i })).toBeNull();
-      unmount();
+    const aboutView = renderAtRoute("/about");
+    expect(
+      screen.getByRole("link", { name: "View Resume" }),
+    ).toHaveAttribute("href", "/resume.pdf");
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Experience" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", {
+        level: 2,
+        name: "Education & Certifications",
+      }),
+    ).toBeInTheDocument();
+    aboutView.unmount();
+
+    const contactView = renderAtRoute("/contact");
+    expect(
+      screen.getByRole("link", { name: /download \/ view pdf/i }),
+    ).toHaveAttribute("href", "/resume.pdf");
+    contactView.unmount();
+
+    // Empty fallback
+    site.resumeUrl = "";
+    try {
+      for (const route of ["/", "/about", "/contact"]) {
+        const { unmount } = renderAtRoute(route);
+        expect(screen.queryByRole("link", { name: /resume/i })).toBeNull();
+        expect(
+          screen.queryByRole("link", { name: /download \/ view pdf/i }),
+        ).toBeNull();
+        unmount();
+      }
+    } finally {
+      site.resumeUrl = "/resume.pdf";
     }
   });
 
@@ -279,6 +366,57 @@ describe("Portfolio structure and accessibility", () => {
       const { unmount } = renderAtRoute(route);
       expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
       unmount();
+    }
+  });
+
+  it("does not replay the circuit intro after navigating away mid-animation and returning Home", async () => {
+    const user = userEvent.setup();
+    const killSpy = vi.fn();
+
+    // Simulate a 3.5s animation still in flight (onComplete never fires before unmount)
+    gsap.timeline.mockImplementationOnce(() => ({
+      add: vi.fn().mockReturnThis(),
+      to: vi.fn().mockReturnThis(),
+      kill: killSpy,
+    }));
+
+    renderAtRoute("/");
+    expect(gsap.timeline).toHaveBeenCalledTimes(1);
+
+    // Navigate away before the 3.5s intro completes
+    const primaryNav = screen.getByRole("navigation", { name: "Primary" });
+    await user.click(within(primaryNav).getAllByRole("link", { name: "About" })[0]);
+    expect(killSpy).toHaveBeenCalledTimes(1);
+    expect(
+      screen.getByRole("heading", { level: 1, name: "About" }),
+    ).toBeInTheDocument();
+
+    // Return Home: intro must NOT replay
+    await user.click(
+      within(primaryNav).getByRole("link", { name: `${site.name}, home` }),
+    );
+    expect(
+      screen.getByRole("heading", { level: 1, name: site.name }),
+    ).toBeInTheDocument();
+    expect(gsap.timeline).toHaveBeenCalledTimes(1);
+  });
+
+  it("bypasses GSAP timeline animation completely when prefers-reduced-motion is active", () => {
+    const originalMatchMedia = window.matchMedia;
+    window.matchMedia = vi.fn().mockImplementation((query) => ({
+      matches: query === "(prefers-reduced-motion: reduce)",
+      media: query,
+      onchange: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }));
+
+    try {
+      renderAtRoute("/");
+      expect(gsap.timeline).not.toHaveBeenCalled();
+    } finally {
+      window.matchMedia = originalMatchMedia;
     }
   });
 });

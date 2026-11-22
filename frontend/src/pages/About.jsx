@@ -23,9 +23,8 @@ const About = () => {
         <p className="mt-4 text-base leading-relaxed">
           My work emphasizes strong relational schemas, explicit validation
           boundaries, and reproducible evaluation so software and analytical
-          workflows remain trustworthy as requirements evolve. Alongside Python,
-          TypeScript, SQL, and C, I am actively expanding my systems work in
-          Rust.
+          workflows remain trustworthy as requirements evolve across Python,
+          TypeScript, JavaScript, Java, SQL, and C.
         </p>
 
         <div className="mt-6 flex flex-wrap items-center gap-4">
@@ -51,7 +50,7 @@ const About = () => {
       {site.experience?.length > 0 && (
         <section aria-labelledby="experience-heading" className="max-w-[70ch]">
           <h2 id="experience-heading" className={`text-2xl font-bold ${palette.text}`}>
-            Experience &amp; Education
+            Experience
           </h2>
           <div className="mt-6 space-y-6">
             {site.experience.map((entry) => (
@@ -76,6 +75,36 @@ const About = () => {
                     ))}
                   </ul>
                 )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {site.education?.length > 0 && (
+        <section aria-labelledby="education-heading" className="max-w-[70ch]">
+          <h2 id="education-heading" className={`text-2xl font-bold ${palette.text}`}>
+            Education &amp; Certifications
+          </h2>
+          <div className="mt-6 space-y-4">
+            {site.education.map((item) => (
+              <div
+                key={`${item.degree}-${item.institution}`}
+                className={`rounded-xl border p-5 ${palette.border} ${palette.surface}`}
+              >
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <h3 className={`text-base font-semibold ${palette.text}`}>
+                    {item.degree}
+                  </h3>
+                  {item.dates && (
+                    <span className={`text-xs ${palette.mutedText}`}>
+                      {item.dates}
+                    </span>
+                  )}
+                </div>
+                <p className={`mt-1 text-sm ${palette.mutedText}`}>
+                  {item.institution}
+                </p>
               </div>
             ))}
           </div>
