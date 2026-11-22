@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-11-22
+
+### Added
+
+- Full structured case study for **RSA Learning Lab** (`/projects/rsa-learning-lab`) documenting the learner problem, three-step guided workspace, Flask/SymPy `/teaching/*` architecture, decimal-string big-integer serialization, textbook-versus-production RSA tradeoffs, accessibility design, and `83` `pytest` + `66` `Vitest`/`axe-core` verification suite
+- Added `frontend/public/robots.txt` so SPA rewrite rules do not return `index.html` for crawler `/robots.txt` requests, and published the human-readable one-page résumé at `/resume.pdf` across `Home` (`TitleCard` and `Get in Touch`), `About`, `Contact`, and `Footer`
+- Verified `Experience` (`Collab Collective Studio`, `Procentrix, LLC`, `PNC`, `United States Navy`) and `Education & Certifications` (`Florida International University — expected July 2027, GPA: 3.84`, `MIT`, `University of San Francisco — Summa Cum Laude, GPA: 3.87`) sections on `/about`
+- Dependency audit and remediation record ([`docs/dependency-audit.md`](docs/dependency-audit.md))
+- Regression tests covering interrupted `CircuitHero` intro navigation, mobile `Primary` navigation landmark membership, structured `RSA Learning Lab` case-study rendering, and conditional `resumeUrl` rendering
+
+### Changed
+
+- Replaced jargon-heavy hero tagline and meta descriptions with recruiter-readable full-stack positioning and tightened public skill claims to repository- and résumé-verified technologies
+- Moved `@tailwindcss/vite` to `devDependencies`, upgraded `react-router` to `^7.18.6`, and updated compatible minor/patch packages to resolve all `13` `npm audit` vulnerabilities (`0` remaining)
+- Renamed `ProjectCard` live status badge from `"Live Demo"` to `"Live"` to avoid duplicating the adjacent `"Live Demo"` action link
+- Aligned [`render.yaml`](render.yaml) service name with `portfolio-r88y` and documented Render Dashboard SPA rewrite requirements in [`README.md`](README.md)
+
+### Fixed
+
+- Fixed `CircuitHero` intro tracking (`introState.js`) so navigating away before the 3.5-second GSAP animation finishes never replays the intro upon returning to `/`
+- Placed `#mobile-primary-menu` inside `<nav aria-label="Primary">` in `Header.jsx` so mobile navigation links belong to the `Primary` landmark when open
+
+### Removed
+
+- Unused Google Fonts `Rock Salt` `@import` and `--font-rock-salt` theme token in `frontend/src/index.css`, eliminating external font requests
+
 ## [0.3.0] - 2026-11-21
 
 ### Added
