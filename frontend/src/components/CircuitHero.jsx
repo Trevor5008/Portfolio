@@ -5,14 +5,16 @@ import TitleCard from "./TitleCard";
 import { themeColors } from "../data/themes.js";
 import { useTheme } from "./useTheme.js";
 import { useReducedMotion } from "../hooks/useReducedMotion.js";
-
-let hasPlayedIntro = false;
+import {
+  hasPlayedCircuitIntro,
+  markCircuitIntroPlayed,
+} from "./introState.js";
 
 const CircuitHero = () => {
   const { theme } = useTheme();
   const reducedMotion = useReducedMotion();
   const [isComplete, setIsComplete] = useState(
-    () => reducedMotion || hasPlayedIntro,
+    () => reducedMotion || hasPlayedCircuitIntro(),
   );
   const palette = themeColors[theme];
 
@@ -33,18 +35,23 @@ const CircuitHero = () => {
 
   useLayoutEffect(() => {
     const allPaths = [...polyPaths.current, ...linePaths.current].filter(
-      (p) => p && typeof p.getTotalLength === "function" && p.getTotalLength() > 0,
+      (p) =>
+        p && typeof p.getTotalLength === "function" && p.getTotalLength() > 0,
     );
 
-    if (reducedMotion || hasPlayedIntro) {
+    if (reducedMotion || hasPlayedCircuitIntro()) {
       allPaths.forEach((path) => {
         path.style.strokeDasharray = "";
         path.style.strokeDashoffset = "0";
       });
       setIsComplete(true);
-      hasPlayedIntro = true;
+      markCircuitIntroPlayed();
       return undefined;
     }
+
+    // Mark played as soon as the intro begins so navigating away mid-animation
+    // cannot trigger a replay when returning Home.
+    markCircuitIntroPlayed();
 
     allPaths.forEach((path) => {
       const length = path.getTotalLength();
@@ -54,7 +61,6 @@ const CircuitHero = () => {
 
     const t1 = gsap.timeline({
       onComplete: () => {
-        hasPlayedIntro = true;
         setIsComplete(true);
       },
       ease: "power2.inOut",
@@ -66,6 +72,7 @@ const CircuitHero = () => {
     });
 
     return () => {
+      markCircuitIntroPlayed();
       t1.kill();
     };
   }, [reducedMotion]);
