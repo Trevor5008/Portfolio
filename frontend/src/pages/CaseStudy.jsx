@@ -14,7 +14,9 @@ const CaseStudy = () => {
   const palette = themeColors[theme];
   const project = getProjectBySlug(slug);
 
-  useDocumentTitle(project ? `${project.title} | ${site.name}` : "");
+  useDocumentTitle(project ? `${project.title} | ${site.name}` : "", {
+    canonical: Boolean(project),
+  });
 
   if (!project) {
     return <NotFound />;

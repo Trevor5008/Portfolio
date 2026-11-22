@@ -8,7 +8,7 @@ const NotFound = () => {
   const { theme } = useTheme();
   const palette = themeColors[theme];
 
-  useDocumentTitle(`Page Not Found | ${site.name}`);
+  useDocumentTitle(`Page Not Found | ${site.name}`, { canonical: false });
 
   return (
     <section className="mx-auto flex max-w-3xl flex-col items-start gap-4 px-4 py-16 sm:px-6">
