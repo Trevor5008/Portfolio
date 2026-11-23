@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Full structured case study for **Palander** (`/projects/palander`) covering the solo-operator execution problem, Obsidian/knowledge boundary, FastAPI → PostgreSQL architecture, RRULE recurrence and multi-objective decisions, four static screenshots with intrinsic dimensions, public repository evidence links, truthful local-only availability, and deferred Sprint 2 / release / AI scope
+- Optional case-study schema fields (`architecture`, `evidenceLinks`, `limitationItems`, `deferredItems`, `availabilityNote`) with backward-compatible rendering for existing RSA Learning Lab content
+- Static Palander screenshots at `frontend/public/projects/palander/` (`hero.png`, `planning.png`, `recurrence.png`, `schedule-import.png`)
+- Synthetic CaseStudy fixture tests covering empty optional sections, Availability, Architecture, Evidence links, and separated limitation vs deferred lists
+
 ## [0.3.1] - 2026-11-22
 
 ### Added

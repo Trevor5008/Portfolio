@@ -19,6 +19,51 @@ const renderAtRoute = (initialEntry = "/") =>
     </MemoryRouter>,
   );
 
+const withSyntheticProject = (overrides, runTest) => {
+  const syntheticProject = {
+    slug: "synthetic-fixture-project",
+    title: "Synthetic Fixture Project",
+    summary: "Synthetic fixture used to verify CaseStudy renderer states.",
+    status: "in-progress",
+    featured: false,
+    role: "Solo Author",
+    timeline: "",
+    stack: ["Python", "React"],
+    thumbnail: "",
+    links: {
+      demo: "",
+      repo: "https://github.com/example/synthetic-fixture",
+    },
+    caseStudy: {
+      tldr: "",
+      problem: "",
+      contribution: [],
+      solution: "",
+      stackNotes: [],
+      decisions: [],
+      evidence: [],
+      outcome: "",
+      limitations: "",
+      architecture: "",
+      evidenceLinks: [],
+      limitationItems: [],
+      deferredItems: [],
+      availabilityNote: "",
+    },
+    ...overrides,
+  };
+
+  projects.push(syntheticProject);
+  try {
+    return runTest(syntheticProject);
+  } finally {
+    const idx = projects.indexOf(syntheticProject);
+    if (idx !== -1) {
+      projects.splice(idx, 1);
+    }
+  }
+};
+
 describe("Portfolio structure and accessibility", () => {
   beforeEach(() => {
     localStorage.clear();
@@ -191,7 +236,115 @@ describe("Portfolio structure and accessibility", () => {
     ).toHaveAttribute("href", rsaProject.links.repo);
   });
 
-  it("renders the full structured RSA Learning Lab case study and NotFound for unknown slugs", () => {
+  it("renders the full Palander case study with intrinsic screenshot dimensions, repository evidence links, truthful availability, and no Live Demo link", () => {
+    const palanderProject = projects.find((p) => p.slug === "palander");
+
+    // Card check: intrinsic thumbnail dimensions + repo link + no Live Demo link
+    const cardView = render(
+      <MemoryRouter>
+        <ThemeProvider>
+          <ProjectCard project={palanderProject} />
+        </ThemeProvider>
+      </MemoryRouter>,
+    );
+    const cardImg = screen.getByRole("img", { name: "Palander preview" });
+    expect(cardImg).toHaveAttribute("width", "1356");
+    expect(cardImg).toHaveAttribute("height", "826");
+    expect(
+      screen.queryByRole("link", { name: /live demo/i }),
+    ).toBeNull();
+    expect(
+      screen.getByRole("link", { name: "Palander GitHub repository" }),
+    ).toHaveAttribute("href", "https://github.com/Trevor5008/Palander");
+    cardView.unmount();
+
+    // Full CaseStudy route check
+    renderAtRoute("/projects/palander");
+
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Palander" }),
+    ).toBeInTheDocument();
+    expect(document.title).toBe("Palander | Trevor Werner");
+    expect(
+      document.querySelector('link[rel="canonical"]'),
+    ).toHaveAttribute("href", "https://trevorwerner.com/projects/palander");
+
+    expect(
+      screen.queryByRole("heading", {
+        level: 2,
+        name: "Case study in preparation",
+      }),
+    ).toBeNull();
+
+    for (const sectionHeading of [
+      "Availability",
+      "Problem",
+      "Role and contribution",
+      "Solution",
+      "Architecture",
+      "Stack",
+      "Engineering decisions",
+      "Evidence",
+      "Outcome and limitations",
+      "Deferred and future work",
+      "Project links",
+    ]) {
+      expect(
+        screen.getByRole("heading", { level: 2, name: sectionHeading }),
+      ).toBeInTheDocument();
+    }
+
+    // No Live Demo link anywhere on the Palander page; repo links remain intact
+    expect(screen.queryByRole("link", { name: /live demo/i })).toBeNull();
+    expect(
+      screen.getByRole("link", { name: "View Repository" }),
+    ).toHaveAttribute("href", "https://github.com/Trevor5008/Palander");
+    expect(
+      screen.getByRole("link", { name: "Source Repository on GitHub" }),
+    ).toHaveAttribute("href", "https://github.com/Trevor5008/Palander");
+
+    // Availability note explicitly communicates no hosted demo and no published GitHub Release
+    const availabilityNote = screen.getByText(
+      /Palander currently runs locally via Docker Compose/i,
+    );
+    expect(availabilityNote).toHaveTextContent(/no public hosted demo/i);
+    expect(availabilityNote).toHaveTextContent(
+      /no GitHub Release or GHCR container tag has been published/i,
+    );
+
+    // Every Palander evidence image (hero + 3 gallery screenshots, no duplicate asset) has descriptive alt text and intrinsic dimensions
+    const article = screen.getByRole("article");
+    const evidenceImages = within(article).getAllByRole("img");
+    expect(evidenceImages).toHaveLength(4);
+    const uniqueSrcs = new Set(
+      evidenceImages.map((img) => img.getAttribute("src")),
+    );
+    expect(uniqueSrcs.size).toBe(4);
+    evidenceImages.forEach((img) => {
+      expect(img.getAttribute("alt")?.trim().length).toBeGreaterThan(30);
+      expect(img).toHaveAttribute("width", "1356");
+      expect(img).toHaveAttribute("height", "826");
+    });
+
+    // Public repository evidence links have accessible labels and open safely
+    const repoEvidenceHeading = screen.getByRole("heading", {
+      level: 3,
+      name: "Public repository evidence",
+    });
+    const repoEvidenceBlock = repoEvidenceHeading.parentElement;
+    const evidenceAnchors = within(repoEvidenceBlock).getAllByRole("link");
+    expect(evidenceAnchors.length).toBeGreaterThanOrEqual(8);
+    evidenceAnchors.forEach((anchor) => {
+      expect(anchor.textContent.trim().length).toBeGreaterThan(10);
+      expect(anchor.getAttribute("href")).toMatch(
+        /^https:\/\/github\.com\/Trevor5008\/Palander\/blob\/main\//,
+      );
+      expect(anchor).toHaveAttribute("target", "_blank");
+      expect(anchor).toHaveAttribute("rel", "noopener noreferrer");
+    });
+  });
+
+  it("renders the full structured RSA Learning Lab case study including string-based limitations and NotFound for unknown slugs", () => {
     const { unmount } = renderAtRoute("/projects/rsa-learning-lab");
 
     expect(
@@ -219,6 +372,21 @@ describe("Portfolio structure and accessibility", () => {
       ).toBeInTheDocument();
     }
     expect(
+      screen.getByText(/unpadded textbook RSA strictly for education/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { level: 2, name: "Availability" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { level: 2, name: "Architecture" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", {
+        level: 2,
+        name: "Deferred and future work",
+      }),
+    ).toBeNull();
+    expect(
       screen.queryByRole("heading", {
         level: 2,
         name: "Case study in preparation",
@@ -237,74 +405,168 @@ describe("Portfolio structure and accessibility", () => {
     expect(document.querySelector('link[rel="canonical"]')).toBeNull();
   });
 
-  it("omits empty optional case-study sections and shows in-preparation state when narrative is empty", () => {
-    const targetProject = projects.find((p) => p.slug === "palander");
-    const originalCaseStudy = targetProject.caseStudy;
+  it("shows in-preparation state on a synthetic empty fixture without creating empty optional headings", () => {
+    withSyntheticProject({}, (fixture) => {
+      renderAtRoute(`/projects/${fixture.slug}`);
 
-    // Default empty narrative -> shows preparation callout, omits empty section headings
-    const { unmount } = renderAtRoute("/projects/palander");
-    expect(
-      screen.getByRole("heading", {
-        level: 2,
-        name: "Case study in preparation",
-      }),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByRole("heading", { level: 2, name: "Problem" }),
-    ).toBeNull();
-    expect(
-      screen.queryByRole("heading", {
-        level: 2,
-        name: "Engineering decisions",
-      }),
-    ).toBeNull();
-    unmount();
-
-    // Partial narrative -> renders populated sections and omits empty optional sections
-    targetProject.caseStudy = {
-      ...originalCaseStudy,
-      problem: "Fragmented task lists lose domain and objective context.",
-      solution: "Unified daily timeline backed by PostgreSQL constraints.",
-      contribution: [],
-      stackNotes: [],
-      decisions: [],
-      evidence: [],
-      outcome: "",
-      limitations: "",
-    };
-
-    try {
-      renderAtRoute("/projects/palander");
       expect(
-        screen.getByRole("heading", { level: 2, name: "Problem" }),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole("heading", { level: 2, name: "Solution" }),
-      ).toBeInTheDocument();
-      expect(
-        screen.queryByRole("heading", {
+        screen.getByRole("heading", {
           level: 2,
-          name: "Role and contribution",
+          name: "Case study in preparation",
         }),
-      ).toBeNull();
-      expect(
-        screen.queryByRole("heading", {
+      ).toBeInTheDocument();
+
+      for (const omittedHeading of [
+        "Availability",
+        "Problem",
+        "Role and contribution",
+        "Solution",
+        "Architecture",
+        "Stack",
+        "Engineering decisions",
+        "Evidence",
+        "Outcome and limitations",
+        "Deferred and future work",
+      ]) {
+        expect(
+          screen.queryByRole("heading", { level: 2, name: omittedHeading }),
+        ).toBeNull();
+      }
+    });
+  });
+
+  it("renders Architecture, Availability, Evidence links, string limitations, and separate limitation vs deferred lists only when populated", () => {
+    // 1. Partial fixture without Architecture, Availability, or Deferred items -> omits their headings cleanly while rendering string limitations
+    withSyntheticProject(
+      {
+        caseStudy: {
+          problem: "Synthetic problem statement.",
+          solution: "Synthetic solution summary.",
+          architecture: "   ",
+          availabilityNote: "",
+          limitations: "Legacy string-based limitation note remains supported.",
+          limitationItems: [],
+          deferredItems: [],
+          evidenceLinks: [],
+        },
+      },
+      (fixture) => {
+        const { unmount } = renderAtRoute(`/projects/${fixture.slug}`);
+        expect(
+          screen.getByRole("heading", { level: 2, name: "Problem" }),
+        ).toBeInTheDocument();
+        expect(
+          screen.getByRole("heading", { level: 2, name: "Solution" }),
+        ).toBeInTheDocument();
+        expect(
+          screen.getByText(
+            "Legacy string-based limitation note remains supported.",
+          ),
+        ).toBeInTheDocument();
+        expect(
+          screen.queryByRole("heading", { level: 2, name: "Architecture" }),
+        ).toBeNull();
+        expect(
+          screen.queryByRole("heading", { level: 2, name: "Availability" }),
+        ).toBeNull();
+        expect(
+          screen.queryByRole("heading", { level: 2, name: "Evidence" }),
+        ).toBeNull();
+        expect(
+          screen.queryByRole("heading", {
+            level: 2,
+            name: "Deferred and future work",
+          }),
+        ).toBeNull();
+        expect(
+          screen.queryByRole("heading", {
+            level: 3,
+            name: "Current limitations",
+          }),
+        ).toBeNull();
+        unmount();
+      },
+    );
+
+    // 2. Populated optional fields -> renders Architecture, Availability, Evidence links, and strictly separates limitationItems from deferredItems
+    withSyntheticProject(
+      {
+        caseStudy: {
+          problem: "Synthetic problem.",
+          architecture:
+            "React UI communicates with FastAPI over Bearer JWT.\n\nPostgreSQL enforces foreign-key constraints.",
+          availabilityNote:
+            "Runs locally via Docker Compose; no public hosted demo.",
+          evidenceLinks: [
+            {
+              label: "Clean-Checkout Setup Guide",
+              url: "https://github.com/example/repo/blob/main/docs/clean-checkout.md",
+              note: "Verified setup instructions.",
+            },
+          ],
+          outcome: "All automated checks green.",
+          limitations: "",
+          limitationItems: ["Current limitation item alpha"],
+          deferredItems: ["Deferred future item beta"],
+        },
+      },
+      (fixture) => {
+        renderAtRoute(`/projects/${fixture.slug}`);
+
+        expect(
+          screen.getByRole("heading", { level: 2, name: "Availability" }),
+        ).toBeInTheDocument();
+        expect(
+          screen.getByText(
+            "Runs locally via Docker Compose; no public hosted demo.",
+          ),
+        ).toBeInTheDocument();
+
+        const archHeading = screen.getByRole("heading", {
           level: 2,
-          name: "Engineering decisions",
-        }),
-      ).toBeNull();
-      expect(
-        screen.queryByRole("heading", { level: 2, name: "Evidence" }),
-      ).toBeNull();
-      expect(
-        screen.queryByRole("heading", {
+          name: "Architecture",
+        });
+        expect(archHeading).toBeInTheDocument();
+        expect(
+          within(archHeading.parentElement).getByText(
+            /PostgreSQL enforces foreign-key constraints/i,
+          ),
+        ).toBeInTheDocument();
+
+        const evidenceLink = screen.getByRole("link", {
+          name: "Clean-Checkout Setup Guide",
+        });
+        expect(evidenceLink).toHaveAttribute(
+          "href",
+          "https://github.com/example/repo/blob/main/docs/clean-checkout.md",
+        );
+        expect(evidenceLink).toHaveAttribute("target", "_blank");
+        expect(evidenceLink).toHaveAttribute("rel", "noopener noreferrer");
+
+        const outcomeSection = screen.getByRole("heading", {
           level: 2,
           name: "Outcome and limitations",
-        }),
-      ).toBeNull();
-    } finally {
-      targetProject.caseStudy = originalCaseStudy;
-    }
+        }).parentElement;
+        const deferredSection = screen.getByRole("heading", {
+          level: 2,
+          name: "Deferred and future work",
+        }).parentElement;
+
+        expect(
+          within(outcomeSection).getByText("Current limitation item alpha"),
+        ).toBeInTheDocument();
+        expect(
+          within(outcomeSection).queryByText("Deferred future item beta"),
+        ).toBeNull();
+
+        expect(
+          within(deferredSection).getByText("Deferred future item beta"),
+        ).toBeInTheDocument();
+        expect(
+          within(deferredSection).queryByText("Current limitation item alpha"),
+        ).toBeNull();
+      },
+    );
   });
 
   it("renders working /resume.pdf links across Home, About, Contact, and Footer by default and omits them when empty", () => {
@@ -358,6 +620,7 @@ describe("Portfolio structure and accessibility", () => {
     for (const route of [
       "/",
       "/projects",
+      "/projects/palander",
       "/projects/rsa-learning-lab",
       "/about",
       "/contact",
@@ -385,7 +648,9 @@ describe("Portfolio structure and accessibility", () => {
 
     // Navigate away before the 3.5s intro completes
     const primaryNav = screen.getByRole("navigation", { name: "Primary" });
-    await user.click(within(primaryNav).getAllByRole("link", { name: "About" })[0]);
+    await user.click(
+      within(primaryNav).getAllByRole("link", { name: "About" })[0],
+    );
     expect(killSpy).toHaveBeenCalledTimes(1);
     expect(
       screen.getByRole("heading", { level: 1, name: "About" }),

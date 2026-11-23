@@ -8,6 +8,11 @@ const createEmptyCaseStudy = () => ({
   evidence: [],
   outcome: "",
   limitations: "",
+  architecture: "",
+  evidenceLinks: [],
+  limitationItems: [],
+  deferredItems: [],
+  availabilityNote: "",
 });
 
 export const projects = [
@@ -29,12 +34,183 @@ export const projects = [
       "TypeScript",
       "Docker",
     ],
-    thumbnail: "",
+    thumbnail: "/projects/palander/hero.png",
     links: {
       demo: "",
       repo: "https://github.com/Trevor5008/Palander",
     },
-    caseStudy: createEmptyCaseStudy(),
+    caseStudy: {
+      tldr: "Personal execution planner for solo operators balancing software engineering, coursework, and portfolio delivery—connecting Domains and Objectives to daily Tasks, calendar Events, and RRULE recurrence over FastAPI and PostgreSQL 16 without turning into a notes vault.",
+      availabilityNote:
+        "Palander currently runs locally via Docker Compose or native Python/PostgreSQL using the documented clean-checkout setup and synthetic reset_demo.sh seed. There is no public hosted demo, and no GitHub Release or GHCR container tag has been published yet (current repository version is 0.13.0).",
+      problem:
+        "Solo operators managing concurrent software engineering, university coursework, and portfolio commitments often split their schedule across disconnected calendars, flat to-do lists, and sprawling Markdown vaults. Daily tasks lose their connection to higher-level objectives, recurring commitments break when a single instance needs to be skipped or rescheduled, and general-purpose workspaces accumulate long-form notes that obscure what actually needs to happen today.",
+      contribution: [
+        "Sole human product and engineering owner across product scoping, PostgreSQL schema design (through Alembic revision 009), FastAPI routers, RRULE recurrence services, React 19 / TypeScript views (Daily, Planning, Weekly, Monthly), and synthetic demo tooling.",
+        "Implemented server-side domain and multi-objective link validation (link_validation.py), single-date GET /daily-workspace aggregation, instance-safe recurring event and recurring task edit/delete scopes (occurrence, future, series), and paste/PDF recurring schedule import.",
+        "Built and documented reproducible verification spanning 83 backend Pytest tests, 3 focused frontend Vitest workflow tests plus production build, 3-job GitHub Actions CI (backend, frontend, and Docker Compose health check), clean-checkout steps, and dependency audit logs.",
+      ],
+      solution:
+        "Palander owns dated execution state while keeping long-form knowledge tools such as Obsidian explicitly external (in-app daily and event notes were retired in v0.12.0 with a legacy export path). Users organize commitments by Domain and Objective, execute the day on the Daily workspace—which pairs an hourly event timeline with Today, 10-row paginated Overdue, and collapsed Completed today task sections alongside domain and objective rollups—review allocation and carry-forward in Planning (/planning), inspect Weekly and Monthly calendars, and bulk-import recurring class or meeting schedules via text paste or PDF.",
+      architecture:
+        "The React 19, TypeScript, and Vite frontend (DailyView, PlanningView, CalendarView, EventModal) communicates through typed client mappers (api.ts, apiMappers.ts) over JWT Bearer authentication (POST /auth/login) to FastAPI routers (domains, objectives, events, tasks, daily_workspace, planning), Pydantic schemas, SQLAlchemy models, and PostgreSQL 16.\n\nAt the relational layer (Alembic revision 009), users own domains, objectives belong to a domain, and every task and event requires a domain_id while linking to one or more same-domain objectives through event_objectives and task_objectives junction tables validated server-side in link_validation.py. Recurring events and tasks store RRULE definitions (DAILY, WEEKLY, or MONTHLY with optional INTERVAL and required UNTIL) on the series row: events expand virtually against event_occurrence_exceptions (uq_event_occurrence_exception), whereas recurring tasks merge RRULE dates with per-date task_occurrences rows (uq_task_occurrence_date) supporting occurrence-level complete, move, skip, and overdue policies (keep_overdue, skip_expired, carry_forward).",
+      stackNotes: [
+        {
+          tech: "FastAPI, SQLAlchemy & Alembic",
+          why: "Enforces typed Pydantic contracts, JWT Bearer authentication, domain/multi-objective link integrity, RRULE expansion, and versioned schema migrations through revision 009.",
+        },
+        {
+          tech: "PostgreSQL 16",
+          why: "Backs relational ownership, many-to-many objective junction tables, and uniqueness constraints on per-date task occurrences and recurring event exceptions.",
+        },
+        {
+          tech: "React 19, TypeScript & Tailwind CSS",
+          why: "Powers the Daily timeline and execution pane, Planning objectives/weekly-review tabs, Weekly/Monthly calendar views, and scoped recurrence modals.",
+        },
+        {
+          tech: "Docker Compose, Pytest, Vitest & GitHub Actions",
+          why: "Runs 83 backend tests, 3 frontend workflow tests + Vite production build, and a live PostgreSQL + FastAPI /health container smoke test on every push and pull request.",
+        },
+      ],
+      decisions: [
+        {
+          title: "Retire embedded notes to keep the execution-versus-knowledge boundary crisp (v0.12.0)",
+          options:
+            "Maintain built-in daily and per-event Markdown notes alongside external vaults, or remove in-app notes and dedicate Palander strictly to dated execution.",
+          choice:
+            "Removed in-app notes tables and endpoints in migration 008 (documenting an export path in docs/legacy-notes-export.md) and left long-form knowledge in external tools like Obsidian.",
+          tradeoff:
+            "Gave up inline journaling inside the planner in exchange for a smaller, more maintainable surface centered on schedule blocks, due dates, and objective rollups.",
+        },
+        {
+          title: "Pair RRULE series rows with per-occurrence exception tables and explicit edit scopes",
+          options:
+            "Eagerly materialize rows for every future date on creation, or store an RRULE on the series and persist only per-occurrence state and exceptions.",
+          choice:
+            "Stored RRULE + UNTIL on events and tasks, tracked per-instance overrides in event_occurrence_exceptions and task_occurrences, and required explicit occurrence | future | series edit/delete scopes plus task overdue policies.",
+          tradeoff:
+            "Adds recurrence-expansion and modal-scope complexity across API and UI, but prevents unbounded row growth and eliminates ambiguous single-instance edits.",
+        },
+        {
+          title: "Enforce same-domain multi-objective links server-side (Alembic 009)",
+          options:
+            "Allow free-form tags or unconstrained cross-domain objective links, or validate domain ownership and junction links on every write.",
+          choice:
+            "Required domain_id on tasks and events and enforced same-domain membership across event_objectives and task_objectives in backend/app/services/link_validation.py.",
+          tradeoff:
+            "Requires selecting a domain before linking objectives, ensuring GET /daily-workspace and /planning/weekly-review rollups stay relationally consistent.",
+        },
+        {
+          title: "Use a deterministic local synthetic seed instead of a shared public sandbox",
+          options:
+            "Host a shared mutable demo database or ship a one-command synthetic local reset anchored to a fixed date with generic schedule fixtures.",
+          choice:
+            "Built scripts/reset_demo.sh and backend/app/demo_seed.py anchored to 2026-10-28 alongside generic schedule_import.txt paste data containing zero personal or school-account records.",
+          tradeoff:
+            "Evaluators must run Docker Compose locally rather than clicking a hosted URL, avoiding shared-state drift, credential abuse, and personal-data exposure.",
+        },
+      ],
+      evidence: [
+        {
+          src: "/projects/palander/hero.png",
+          alt: "Palander Daily workspace on October 28, 2026 showing a 9 AM Deep work block on the Wednesday timeline beside Domain Coverage, Objective Activity, Today tasks, and paginated Overdue tasks.",
+          caption:
+            "Daily view (synthetic demo seed anchored to 2026-10-28): pairs the hourly event timeline with Domain Coverage, Objective Activity, Today tasks, and paginated Overdue controls.",
+          width: 1356,
+          height: 826,
+        },
+        {
+          src: "/projects/palander/planning.png",
+          alt: "Palander Planning view displaying Objectives, Weekly review, and Progress tabs, a New objective form, and domain cards including an active Portfolio case study objective under Career.",
+          caption:
+            "Planning view (/planning): groups active objectives by domain alongside Weekly review and Progress tabs.",
+          width: 1356,
+          height: 826,
+        },
+        {
+          src: "/projects/palander/recurrence.png",
+          alt: "Palander Recurring task modal for Practice drills linked to Career and Portfolio case study with Daily frequency, Repeat until 12/05/2026, Keep overdue policy, and This occurrence vs This and future scope options.",
+          caption:
+            "Recurring task modal (v0.13.0): configures RRULE frequency, overdue policy, multi-objective links, and explicit occurrence-versus-future edit scope.",
+          width: 1356,
+          height: 826,
+        },
+        {
+          src: "/projects/palander/schedule-import.png",
+          alt: "Palander Import schedule modal on the Paste text tab showing synthetic Chemistry Lab and Team Sync rows with term start and end dates, America/New_York timezone, and Extract candidates button.",
+          caption:
+            "Schedule import modal: parses pasted text or text-based PDF schedules into recurring calendar candidates before import.",
+          width: 1356,
+          height: 826,
+        },
+      ],
+      evidenceLinks: [
+        {
+          label: "Palander Engineering Case-Study Source (docs/portfolio-case-study.md)",
+          url: "https://github.com/Trevor5008/Palander/blob/main/docs/portfolio-case-study.md",
+          note: "Canonical v0.13.0 repository narrative mapping claims to source files, migrations, and tests.",
+        },
+        {
+          label: "Clean-Checkout Setup & Verification Log (docs/clean-checkout.md)",
+          url: "https://github.com/Trevor5008/Palander/blob/main/docs/clean-checkout.md",
+          note: "Docker Compose and native Python/PostgreSQL setup commands plus recorded 83-pytest / 3-vitest verification run.",
+        },
+        {
+          label: "GitHub Actions CI Workflow (.github/workflows/ci.yml)",
+          url: "https://github.com/Trevor5008/Palander/blob/main/.github/workflows/ci.yml",
+          note: "Automated backend-test (pytest + Postgres 16), frontend-build (Vitest + Vite build), and Docker Compose /health smoke jobs.",
+        },
+        {
+          label: "Architecture & Request Data Flow (docs/data-flow.md)",
+          url: "https://github.com/Trevor5008/Palander/blob/main/docs/data-flow.md",
+          note: "Mermaid component, CRUD sequence, GET /daily-workspace aggregation, and recurrence scope documentation.",
+        },
+        {
+          label: "PostgreSQL Entity-Relationship Schema — Alembic 009 (docs/schema.md)",
+          url: "https://github.com/Trevor5008/Palander/blob/main/docs/schema.md",
+          note: "ER diagram and uniqueness/check constraints across domains, objectives, events, tasks, and occurrence tables.",
+        },
+        {
+          label: "Dependency Audit Summary (docs/dependency-audit.md)",
+          url: "https://github.com/Trevor5008/Palander/blob/main/docs/dependency-audit.md",
+          note: "Backend pip-audit (0 vulnerabilities) and frontend npm audit remediation log with documented dev-only residual risk.",
+        },
+        {
+          label: "Seeded Demo Walkthrough, Capture Metadata & Walkthrough GIF (docs/demo/)",
+          url: "https://github.com/Trevor5008/Palander/blob/main/docs/demo/walkthrough.md",
+          note: "Step-by-step local walkthrough anchored to 2026-10-28, linking CAPTURE.md and the repository walkthrough.gif artifact.",
+        },
+        {
+          label: "Synthetic Demo Reset Script (scripts/reset_demo.sh)",
+          url: "https://github.com/Trevor5008/Palander/blob/main/scripts/reset_demo.sh",
+          note: "Rebuilds local Compose volumes and seeds deterministic synthetic domains, objectives, events, and recurring tasks.",
+        },
+        {
+          label: "Legacy Notes Export Boundary (docs/legacy-notes-export.md)",
+          url: "https://github.com/Trevor5008/Palander/blob/main/docs/legacy-notes-export.md",
+          note: "Documents the v0.12.0 notes retirement and export path that keeps long-form knowledge outside Palander.",
+        },
+        {
+          label: "Sprint 2 Daily Workspace Usability Draft (docs/planning/sprint-2-draft.md)",
+          url: "https://github.com/Trevor5008/Palander/blob/main/docs/planning/sprint-2-draft.md",
+          note: "Uncommitted draft scope for progressive disclosure, occurrence-safe bulk overdue cleanup, and delete-scope copy.",
+        },
+      ],
+      outcome:
+        "At repository version 0.13.0, Palander delivers an end-to-end daily execution, objective planning, RRULE recurrence, and schedule-import workflow backed by 83 passing backend Pytest tests, 3 passing frontend Vitest workflow tests plus a clean production build, green 3-job GitHub Actions CI, verified clean-checkout and dependency-audit documentation, and deterministic synthetic demo tooling.",
+      limitations: "",
+      limitationItems: [
+        "No public hosted demo and no published v*.*.* GitHub Release or ghcr.io/trevor5008/palander-api container image exist yet.",
+        "PDF schedule import parses text-based PDFs only (scanned PDFs are not OCR-processed), and reminder records are not yet exposed in the UI.",
+        "Frontend unit test coverage is intentionally narrow (3 DailyExecutionPane tests covering overdue pagination and occurrence-scoped completion), relying on backend Pytest suites and the seeded walkthrough for broader UI regression.",
+        "One moderate dev/build-time postcss-selector-parser advisory (transitive via @tailwindcss/typography) remains accepted in docs/dependency-audit.md to avoid forcing a breaking plugin downgrade.",
+      ],
+      deferredItems: [
+        "Sprint 2 Daily Workspace Usability (draft planning only — not committed or loaded to GitHub issues): progressive disclosure for Daily/Overdue lists, occurrence-safe bulk overdue cleanup, and clearer recurring delete-scope confirmation language.",
+        "First tagged public release and GHCR container publish (issue #18 / PAL-S1-004, deferred in Backlog): version-surface verification, v*.*.* git tag, GitHub Release notes, and container package visibility.",
+        "Unscheduled future candidates (not shipped): proposed AI/chat workspace assistant, theme/dark-mode support, and historical recurring-task hygiene for past-starting series; Obsidian sync and knowledge-graph features remain out of scope.",
+      ],
+    },
   },
   {
     slug: "rsa-learning-lab",
