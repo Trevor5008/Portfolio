@@ -7,6 +7,8 @@ import { useTheme } from "../components/useTheme";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 const hasText = (value) => typeof value === "string" && value.trim().length > 0;
+const hasPositiveDimension = (value) =>
+  typeof value === "number" && Number.isFinite(value) && value > 0;
 
 const CaseStudy = () => {
   const { slug } = useParams();
@@ -38,6 +40,17 @@ const CaseStudy = () => {
   const evidenceItems = (cs.evidence || []).filter(
     (item) => item && hasText(item.src) && hasText(item.alt),
   );
+  const evidenceLinks = (cs.evidenceLinks || []).filter(
+    (item) => item && hasText(item.label) && hasText(item.url),
+  );
+  const limitationItems = (cs.limitationItems || []).filter(hasText);
+  const deferredItems = (cs.deferredItems || []).filter(hasText);
+  const architectureParagraphs = hasText(cs.architecture)
+    ? cs.architecture
+        .split(/\n\s*\n/)
+        .map((paragraph) => paragraph.trim())
+        .filter(Boolean)
+    : [];
 
   const heroImage = evidenceItems[0] || null;
   const galleryImages = heroImage ? evidenceItems.slice(1) : evidenceItems;
@@ -46,11 +59,15 @@ const CaseStudy = () => {
     hasText(cs.problem) ||
     contributions.length > 0 ||
     hasText(cs.solution) ||
+    architectureParagraphs.length > 0 ||
     stackNotes.length > 0 ||
     decisions.length > 0 ||
     evidenceItems.length > 0 ||
+    evidenceLinks.length > 0 ||
     hasText(cs.outcome) ||
-    hasText(cs.limitations);
+    hasText(cs.limitations) ||
+    limitationItems.length > 0 ||
+    deferredItems.length > 0;
 
   const hasLinks = Boolean(
     hasText(project.links?.demo) || hasText(project.links?.repo),
@@ -60,11 +77,15 @@ const CaseStudy = () => {
     <article className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
       {/* Header block */}
       <header className={`border-b pb-8 ${palette.border}`}>
-        <h1 className={`text-3xl font-bold tracking-tight sm:text-4xl ${palette.text}`}>
+        <h1
+          className={`text-3xl font-bold tracking-tight sm:text-4xl ${palette.text}`}
+        >
           {project.title}
         </h1>
 
-        <p className={`mt-4 max-w-[70ch] text-lg leading-relaxed ${palette.bodyText}`}>
+        <p
+          className={`mt-4 max-w-[70ch] text-lg leading-relaxed ${palette.bodyText}`}
+        >
           {hasText(cs.tldr) ? cs.tldr : project.summary}
         </p>
 
@@ -122,6 +143,23 @@ const CaseStudy = () => {
             )}
           </div>
         )}
+
+        {hasText(cs.availabilityNote) && (
+          <section
+            aria-labelledby="case-study-availability-heading"
+            className={`mt-5 max-w-[70ch] rounded-lg border px-4 py-3 ${palette.border} ${palette.surface}`}
+          >
+            <h2
+              id="case-study-availability-heading"
+              className={`text-xs font-semibold uppercase tracking-wider ${palette.mutedText}`}
+            >
+              Availability
+            </h2>
+            <p className={`mt-1 text-sm leading-relaxed ${palette.bodyText}`}>
+              {cs.availabilityNote}
+            </p>
+          </section>
+        )}
       </header>
 
       {hasCaseStudyBody ? (
@@ -164,8 +202,18 @@ const CaseStudy = () => {
                   <img
                     src={heroImage.src}
                     alt={heroImage.alt}
-                    loading="lazy"
-                    className={`w-full rounded-xl border ${palette.border}`}
+                    width={
+                      hasPositiveDimension(heroImage.width)
+                        ? heroImage.width
+                        : undefined
+                    }
+                    height={
+                      hasPositiveDimension(heroImage.height)
+                        ? heroImage.height
+                        : undefined
+                    }
+                    decoding="async"
+                    className={`h-auto w-full rounded-xl border ${palette.border}`}
                   />
                   {hasText(heroImage.caption) && (
                     <figcaption className={`mt-2 text-sm ${palette.mutedText}`}>
@@ -177,7 +225,21 @@ const CaseStudy = () => {
             </section>
           )}
 
-          {/* 4. Stack */}
+          {/* 4. Architecture */}
+          {architectureParagraphs.length > 0 && (
+            <section className="max-w-[70ch]">
+              <h2 className={`text-2xl font-bold ${palette.text}`}>
+                Architecture
+              </h2>
+              <div className="mt-3 space-y-3 leading-relaxed">
+                {architectureParagraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* 5. Stack */}
           {stackNotes.length > 0 && (
             <section className="max-w-[70ch]">
               <h2 className={`text-2xl font-bold ${palette.text}`}>Stack</h2>
@@ -197,7 +259,7 @@ const CaseStudy = () => {
             </section>
           )}
 
-          {/* 5. Engineering decisions */}
+          {/* 6. Engineering decisions */}
           {decisions.length > 0 && (
             <section className="max-w-[70ch]">
               <h2 className={`text-2xl font-bold ${palette.text}`}>
@@ -246,34 +308,84 @@ const CaseStudy = () => {
             </section>
           )}
 
-          {/* 6. Evidence / screenshots */}
-          {galleryImages.length > 0 && (
+          {/* 7. Evidence / screenshots & repository artifacts */}
+          {(galleryImages.length > 0 || evidenceLinks.length > 0) && (
             <section>
               <h2 className={`text-2xl font-bold ${palette.text}`}>Evidence</h2>
-              <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
-                {galleryImages.map((img) => (
-                  <figure key={img.src}>
-                    <img
-                      src={img.src}
-                      alt={img.alt}
-                      loading="lazy"
-                      className={`w-full rounded-xl border ${palette.border}`}
-                    />
-                    {hasText(img.caption) && (
-                      <figcaption
-                        className={`mt-2 text-sm ${palette.mutedText}`}
+
+              {galleryImages.length > 0 && (
+                <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
+                  {galleryImages.map((img) => (
+                    <figure key={img.src}>
+                      <img
+                        src={img.src}
+                        alt={img.alt}
+                        width={
+                          hasPositiveDimension(img.width)
+                            ? img.width
+                            : undefined
+                        }
+                        height={
+                          hasPositiveDimension(img.height)
+                            ? img.height
+                            : undefined
+                        }
+                        loading="lazy"
+                        decoding="async"
+                        className={`h-auto w-full rounded-xl border ${palette.border}`}
+                      />
+                      {hasText(img.caption) && (
+                        <figcaption
+                          className={`mt-2 text-sm ${palette.mutedText}`}
+                        >
+                          {img.caption}
+                        </figcaption>
+                      )}
+                    </figure>
+                  ))}
+                </div>
+              )}
+
+              {evidenceLinks.length > 0 && (
+                <div
+                  className={`${galleryImages.length > 0 ? "mt-8" : "mt-4"} max-w-[70ch]`}
+                >
+                  <h3 className={`text-lg font-semibold ${palette.text}`}>
+                    Public repository evidence
+                  </h3>
+                  <ul className="mt-3 space-y-3">
+                    {evidenceLinks.map((item) => (
+                      <li
+                        key={item.url}
+                        className={`rounded-lg border p-4 ${palette.border} ${palette.surface}`}
                       >
-                        {img.caption}
-                      </figcaption>
-                    )}
-                  </figure>
-                ))}
-              </div>
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4 ${palette.text} ${palette.focusRing} rounded-sm`}
+                        >
+                          {item.label}
+                        </a>
+                        {hasText(item.note) && (
+                          <p
+                            className={`mt-1 text-sm leading-relaxed ${palette.mutedText}`}
+                          >
+                            {item.note}
+                          </p>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </section>
           )}
 
-          {/* 7. Outcome and limitations */}
-          {(hasText(cs.outcome) || hasText(cs.limitations)) && (
+          {/* 8. Outcome and limitations */}
+          {(hasText(cs.outcome) ||
+            hasText(cs.limitations) ||
+            limitationItems.length > 0) && (
             <section className="max-w-[70ch]">
               <h2 className={`text-2xl font-bold ${palette.text}`}>
                 Outcome and limitations
@@ -286,10 +398,38 @@ const CaseStudy = () => {
                   {cs.limitations}
                 </p>
               )}
+              {limitationItems.length > 0 && (
+                <div className="mt-4">
+                  <h3 className={`text-base font-semibold ${palette.text}`}>
+                    Current limitations
+                  </h3>
+                  <ul
+                    className={`mt-2 list-disc space-y-2 pl-5 text-sm leading-relaxed ${palette.mutedText}`}
+                  >
+                    {limitationItems.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </section>
           )}
 
-          {/* 8. Repository / demo links */}
+          {/* 9. Deferred and future work */}
+          {deferredItems.length > 0 && (
+            <section className="max-w-[70ch]">
+              <h2 className={`text-2xl font-bold ${palette.text}`}>
+                Deferred and future work
+              </h2>
+              <ul className="mt-3 list-disc space-y-2 pl-5 leading-relaxed">
+                {deferredItems.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {/* 10. Repository / demo links */}
           {hasLinks && (
             <section className="max-w-[70ch]">
               <h2 className={`text-2xl font-bold ${palette.text}`}>

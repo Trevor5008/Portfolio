@@ -8,11 +8,19 @@ const STATUS_META = {
   archived: { label: "Archived", indicator: "▪" },
 };
 
+const hasPositiveDimension = (value) =>
+  typeof value === "number" && Number.isFinite(value) && value > 0;
+
 const ProjectCard = ({ project }) => {
   const { theme } = useTheme();
   const palette = themeColors[theme];
   const statusInfo = STATUS_META[project.status] || STATUS_META["in-progress"];
   const visibleStack = project.stack.slice(0, 4);
+  const thumbnailMeta = project.caseStudy?.evidence?.find(
+    (item) => item && item.src === project.thumbnail,
+  );
+  const thumbWidth = project.thumbnailWidth || thumbnailMeta?.width;
+  const thumbHeight = project.thumbnailHeight || thumbnailMeta?.height;
 
   return (
     <article
@@ -25,8 +33,11 @@ const ProjectCard = ({ project }) => {
           <img
             src={project.thumbnail}
             alt={`${project.title} preview`}
+            width={hasPositiveDimension(thumbWidth) ? thumbWidth : undefined}
+            height={hasPositiveDimension(thumbHeight) ? thumbHeight : undefined}
             loading="lazy"
-            className="h-full w-full object-cover"
+            decoding="async"
+            className="h-full w-full object-cover object-top"
           />
         ) : (
           <div
