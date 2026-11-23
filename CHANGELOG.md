@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optional case-study schema fields (`architecture`, `evidenceLinks`, `limitationItems`, `deferredItems`, `availabilityNote`) with backward-compatible rendering for existing RSA Learning Lab content
 - Static Palander screenshots at `frontend/public/projects/palander/` (`hero.png`, `planning.png`, `recurrence.png`, `schedule-import.png`)
 - Synthetic CaseStudy fixture tests covering empty optional sections, Availability, Architecture, Evidence links, and separated limitation vs deferred lists
+- Optional `highlights` case-study field rendered as an at-a-glance list under the TL;DR
+- Word-budget tests (`caseStudyBudgets.test.js`) that cap each case-study section and keep the total at or under 600 words
+
+### Changed
+
+- Rewrote the Palander and RSA Learning Lab case studies for a two-minute read (Palander from about 1,430 words to under 600), keeping every material claim and cutting Palander's evidence links from 10 to 6
 
 ## [0.3.1] - 2026-11-22
 
