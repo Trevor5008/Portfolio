@@ -25,6 +25,7 @@ const CaseStudy = () => {
   }
 
   const cs = project.caseStudy || {};
+  const highlights = (cs.highlights || []).filter(hasText);
   const contributions = (cs.contribution || []).filter(hasText);
   const stackNotes = (cs.stackNotes || []).filter(
     (item) => item && hasText(item.tech) && hasText(item.why),
@@ -88,6 +89,22 @@ const CaseStudy = () => {
         >
           {hasText(cs.tldr) ? cs.tldr : project.summary}
         </p>
+
+        {highlights.length > 0 && (
+          <ul
+            aria-label="Highlights"
+            className="mt-5 flex flex-wrap gap-2"
+          >
+            {highlights.map((item) => (
+              <li
+                key={item}
+                className={`rounded-md border px-3 py-1 text-sm font-medium ${palette.pill}`}
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+        )}
 
         <dl className="mt-6 flex flex-col gap-4 text-sm sm:flex-row sm:flex-wrap sm:items-center sm:gap-8">
           <div>

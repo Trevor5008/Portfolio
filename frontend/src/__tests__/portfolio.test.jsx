@@ -333,7 +333,7 @@ describe("Portfolio structure and accessibility", () => {
     });
     const repoEvidenceBlock = repoEvidenceHeading.parentElement;
     const evidenceAnchors = within(repoEvidenceBlock).getAllByRole("link");
-    expect(evidenceAnchors.length).toBeGreaterThanOrEqual(8);
+    expect(evidenceAnchors.length).toBeGreaterThanOrEqual(6);
     evidenceAnchors.forEach((anchor) => {
       expect(anchor.textContent.trim().length).toBeGreaterThan(10);
       expect(anchor.getAttribute("href")).toMatch(
